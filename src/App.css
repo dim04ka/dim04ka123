@@ -2,16 +2,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 
 .App-header {
   background-color: #282c34;
@@ -22,17 +12,60 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  background-image: url('./mafia.gif');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  gap: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.wrapper{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  justify-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.wrapper .item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  height:100px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  background-color: #6c6b6b;
+}
+.wrapper .item.active{
+  display: flex;
+  /* flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height:70px;
+  border: 1px solid #000;
+  border-radius: 10px; */
+  background-color: rgb(153, 47, 47);
+}
+.button {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  
+}
+.button__random{
+  width: 150px;
+  height: 100px;
+  font-size: 26px;
+}
+.button__clear{
+  width: 100px;
+  height: 100px;
+  font-size: 26px;
+}
+.button input {
+  font-size: 28px;
 }
