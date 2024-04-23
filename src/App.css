@@ -61,11 +61,30 @@
   height: 100px;
   font-size: 26px;
 }
-.button__clear{
-  width: 100px;
-  height: 100px;
+.button__clean{
+  width: 70px;
+  height: 70px;
   font-size: 26px;
+  margin-bottom: 20px;
 }
 .button input {
   font-size: 28px;
+}
+
+.input{
+  display: flex;
+  flex-direction: column;
+}
+
+.button__submit{
+  width: 70px;
+  height: 70px;
+  margin-top: 20px;
+  font-size: 40px;
+}
+
+.button__submit-changes {
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
 }
