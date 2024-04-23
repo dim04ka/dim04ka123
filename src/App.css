@@ -32,8 +32,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 50%;
-  height:100px;
+  width: 90%;
+  height: 80px;
   border: 1px solid #000;
   border-radius: 10px;
   background-color: #6c6b6b;
@@ -57,8 +57,8 @@
   
 }
 .button__random{
-  width: 150px;
-  height: 100px;
+  width: 120px;
+  height: 50px;
   font-size: 26px;
 }
 .button__clean{
