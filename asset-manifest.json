@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/dim04ka123/static/css/main.be2b62dc.css",
+    "main.js": "/dim04ka123/static/js/main.1bd408b0.js",
+    "static/media/mafia.gif": "/dim04ka123/static/media/mafia.a1e32c1df2da525bc35a.gif",
+    "index.html": "/dim04ka123/index.html",
+    "main.be2b62dc.css.map": "/dim04ka123/static/css/main.be2b62dc.css.map",
+    "main.1bd408b0.js.map": "/dim04ka123/static/js/main.1bd408b0.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.be2b62dc.css",
+    "static/js/main.1bd408b0.js"
+  ]
+}
