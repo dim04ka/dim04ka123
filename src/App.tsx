@@ -109,15 +109,22 @@ function App() {
 
     const textDate = `${formattedDay}.${formattedMonth}.${year}`;
     const obj = {
-      chat_id: '518174528',
+      // chat_id: '518174528',
+      chat_id: '-1001768320094',
       text:
         `
 📆 ${textDate}
-⚫️Игра №: ${numberGame}
-🎴Судья: ${judge}
+▶️ Игра №: ${numberGame}
+👨🏻‍⚖️ Судья: г-ин ${judge}
 ${items.map(item => `${item.id} ${item.userName}\n`).join('')}
       `
     };
+
+    // await fetch(`https://api.telegram.org/bot${token}/getUpdates`).then((res) => {
+
+    //   const response = res.json()
+    //   console.log(response)
+    // })
 
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
