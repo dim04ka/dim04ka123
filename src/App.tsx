@@ -98,6 +98,10 @@ function App() {
     setEdit(null)
   }
 
+  const transformText = (name: string) => {
+    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+  }
+
   const handleSubmit = async () => {
     const date = new Date();
     const day = date.getDate();
@@ -116,7 +120,8 @@ function App() {
 📆 ${textDate}
 ▶️ Игра №: ${numberGame}
 👨🏻‍⚖️ Судья: г-ин ${judge}
-${items.map(item => `${item.id} ${item.userName}\n`).join('')}
+
+${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
       `
     };
 
