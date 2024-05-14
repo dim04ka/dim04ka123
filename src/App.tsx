@@ -16,6 +16,7 @@ function App() {
   const [items, setItems] = React.useState<Item[]>(initial)
   const [numbers, setNumbers] = React.useState<number[]>([])
   const [userName, setUserName] = React.useState<string>('')
+  const [role, setRole] = React.useState<string>('Г-н')
 
   const [edit, setEdit] = React.useState<Item | null>(null)
   const [value, setValue] = React.useState<string>('')
@@ -137,17 +138,17 @@ function App() {
         `
 📆 ${textDate}
 ▶️ Игра №: ${numberGame}
-👨🏻‍⚖️ Судья: г-ин ${judge}
+👨🏻‍⚖️ Ведущий: ${role} ${judge}
 
 ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
       `
     };
 
-    // await fetch(`https://api.telegram.org/bot${token}/getUpdates`).then((res) => {
+    await fetch(`https://api.telegram.org/bot${token}/getUpdates`).then((res) => {
 
-    //   const response = res.json()
-    //   console.log(response)
-    // })
+      const response = res.json()
+      console.log(response)
+    })
 
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
@@ -161,8 +162,15 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
         setItems(() => initial)
       }
     })
+    // const timeNow = new Date().getTime();
+    // console.log('timeNow', timeNow)
+    // localStorage.setItem('gameCreated', JSON.stringify(items))
   }
 
+  const handleChangeType = (value: any) => {
+    console.log('value', value.target.value)
+    setRole(value.target.value)
+  }
   return (
     <div className="App">
       <header className="App-header">
@@ -170,7 +178,7 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
           <List items={items} cb={cb} />
         </div>
 
-        <div className="button">
+        <form className="button">
           <div>
             {edit && (
               <>
@@ -211,7 +219,11 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
                   <input type='text' value={numberGame} onChange={(e) => setNumberGame(e.target.value)} />
                 </div>
                 <div className='input'>
-                  <label>Судья:</label>
+                  <label>Ведущий:</label>
+                  <select onChange={handleChangeType}>
+                    <option value='Г-н'>Г-н</option>
+                    <option value='Г-жа'>Г-жа</option>
+                  </select>
                   <input type='text' value={judge} onChange={(e) => setJudge(e.target.value)} />
                 </div>
 
@@ -220,7 +232,7 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
             )
           }
 
-        </div>
+        </form>
         <button className='button__clean' onClick={() => {
           setNumbers([])
           setItems(() => initial)
