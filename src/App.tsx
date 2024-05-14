@@ -3,7 +3,6 @@ import './App.css';
 import { Item } from './interface'
 import List from './List';
 
-
 const initial: Item[] = []
 
 for (let i = 1; i < 11; i++) {
@@ -30,18 +29,32 @@ function App() {
   const token = '7194656560:AAFgAoib6UVKqvhUXP0rTqmjA6wKJP5ufjA'
 
   useEffect(() => {
+    const valueItems = localStorage.getItem('items')
+    const valueNumbers = localStorage.getItem('numbers')
+    if (valueNumbers) {
+      setNumbers(JSON.parse(valueNumbers))
+    }
+    if (valueItems) {
+      // console.log('valueItems', JSON.parse(valueItems))
+      setItems(JSON.parse(valueItems))
+    }
+  }, [])
+
+  useEffect(() => {
     refInput.current?.focus()
   }, [])
 
   const getNumber = () => {
-    function getRandomNumber(): void {
+    (function getRandomNumber(): void {
       const randomValue = Math.floor(Math.random() * 10) + 1
 
       if (numbers.includes(randomValue)) {
         return getRandomNumber()
       } else {
-        setNumbers(numbers => [...numbers, randomValue])
-        setItems(items => items.map(item => {
+        const valueNumbers = [...numbers, randomValue]
+        localStorage.setItem('numbers', JSON.stringify(valueNumbers))
+        setNumbers(valueNumbers)
+        const list = items.map(item => {
           if (item.id === randomValue) {
             return {
               ...item,
@@ -50,10 +63,12 @@ function App() {
             }
           }
           return item
-        }))
+        })
+        localStorage.setItem('items', JSON.stringify(list))
+
+        setItems(list)
       }
-    }
-    getRandomNumber()
+    })()
     setUserName('')
     refInput.current?.focus()
 
@@ -86,7 +101,7 @@ function App() {
   }
 
   const handleSave = () => {
-    setItems(items => items.map(item => {
+    const list = items.map(item => {
       if (item.id === edit?.id) {
         return {
           ...item,
@@ -94,7 +109,10 @@ function App() {
         }
       }
       return item
-    }))
+    })
+    localStorage.setItem('items', JSON.stringify(list))
+    setItems(list)
+
     setEdit(null)
   }
 
@@ -165,8 +183,8 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
             )}
           </div>
           {
-            numbers.length !== 10 && (
-              <input
+            (
+              !edit && numbers.length !== 10 && <input
 
                 type="text"
                 value={userName}
@@ -186,10 +204,7 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
           {
             numbers.length === 10 && (
               <div>
-                <button className='button__clean' onClick={() => {
-                  setNumbers([])
-                  setItems(() => initial)
-                }}><i className="fa fa-trash-o"></i></button>
+
 
                 <div className='input'>
                   <label>Игра №</label>
@@ -206,6 +221,12 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
           }
 
         </div>
+        <button className='button__clean' onClick={() => {
+          setNumbers([])
+          setItems(() => initial)
+          localStorage.setItem('items', JSON.stringify(initial))
+          localStorage.setItem('numbers', JSON.stringify([]))
+        }}><i className="fa fa-trash-o"></i></button>
 
       </header>
     </div>
