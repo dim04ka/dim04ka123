@@ -199,7 +199,7 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
           }
 
 
-          {numbers.length !== 10 && (<button className='button__random' onClick={getNumber} disabled={numbers.length === 10}>random</button>)}
+          {numbers.length !== 10 && !edit && (<button className='button__random' onClick={getNumber} disabled={numbers.length === 10}>random</button>)}
 
           {
             numbers.length === 10 && (
@@ -224,6 +224,7 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
         <button className='button__clean' onClick={() => {
           setNumbers([])
           setItems(() => initial)
+          setEdit(null)
           localStorage.setItem('items', JSON.stringify(initial))
           localStorage.setItem('numbers', JSON.stringify([]))
         }}><i className="fa fa-trash-o"></i></button>
