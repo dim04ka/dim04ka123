@@ -119,7 +119,8 @@ const RandomChair = () => {
 
 
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
     const date = new Date();
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -149,10 +150,6 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
     // })
 
 
-    // const timeNow = new Date().getTime();
-    // console.log('timeNow', timeNow)
-
-
     // Перемешивание массива (используя алгоритм Фишера-Йетса)
     function shuffle(array: Item[]) {
       for (let i = array.length - 1; i > 0; i--) {
@@ -162,12 +159,10 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
       return array;
     }
 
-    console.log('items before shuffle', items)
+
     // Перемешиваем массив игроков
     const players = shuffle([...items]);
     const playersWithRole: Item[] = players.map(item => ({ ...item, role: 'red' }))
-
-    console.log('items after shuffle', players)
 
 
     // Назначаем роли: первые три - "mafia", остальные - "red"
@@ -179,20 +174,12 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
       if (i > 3) playersWithRole[i].role = 'red';
     }
 
-    console.log('items after role', playersWithRole)
-
-
-    // localStorage.setItem('playersWithRole', JSON.stringify(playersWithRole))
-
-
     const gameCreated = localStorage.getItem('gameCreated');
     const dateNow = Date.now()
     if (gameCreated) {
       const games = JSON.parse(gameCreated);
       localStorage.setItem('gameCreated', JSON.stringify([...games, { judge, role, numberGame, date: getDate(), id: dateNow, status: 'working', playersWithRole }]));
     } else {
-
-      // const itemsWithRole = addRandomRole(items)
       localStorage.setItem('gameCreated', JSON.stringify([{ judge, role, numberGame, date: getDate(), id: dateNow, status: 'working', playersWithRole }]));
     }
 
@@ -206,10 +193,11 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
       if (res.status === 200) {
         setNumbers([])
         setItems(() => initial)
+        navigate('/games')
       }
     })
 
-    navigate('/games')
+
   }
 
   const handleChangeType = (value: any) => {

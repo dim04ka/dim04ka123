@@ -7,6 +7,7 @@ import { Role, IInfoGame } from "../../interface";
 import { token } from '../../consts'
 import { transformText } from '../../utils'
 import { useNavigate } from "react-router-dom";
+import { Typography } from '@mui/material';
 
 import { db } from '../../firestore/config'
 const RoleComponent = () => {
@@ -163,10 +164,11 @@ ${comment}`
   }
   return (
     <>
-      <div> table:{id}</div>
+      <Typography variant='caption'> table:{id}</Typography>
+      <hr />
       {game.map((item: Item) => {
-        return (<div style={{ display: 'flex' }} key={item.id}>
-          <div> {item.userName === '' ? 'пусто' : item.userName}</div>
+        return (<div style={{ display: 'flex', marginBottom: 5 }} key={item.id}>
+          <div style={{ marginRight: 5 }} > {item.userName === '' ? 'пусто' : item.userName}</div>
           <Select role={item.role} cb={(role) => handleChange(item.id, role)} />
 
           <input type="number" step={0.1} style={{ width: '50px' }} value={formValues[item.id]?.point} onChange={(e) => onInputChanges(item.id, e.target.value)} />

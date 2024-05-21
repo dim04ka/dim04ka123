@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
+import './style.scss'
+import Button from '@mui/material/Button';
+import { Typography } from '@mui/material';
 
 const Games = () => {
   const [items, setItems] = useState([])
@@ -25,19 +28,17 @@ const Games = () => {
 
       {items.map((item: any) => {
         return (
-          <div key={item.numberGame} style={{ border: '1px solid red' }}>
-            <div>Игра № {item.numberGame} </div>
-            <div>{(item.date)}</div>
+          <div key={item.numberGame} className="game">
+            <Link to={`${item.id}`}>
+              <div><Typography variant='button'>Игра № {item.numberGame} </Typography></div>
+              <Typography variant='body2'>{(item.date)} </Typography>
 
-            <div>
-              <span>{item.role}</span><span> </span><span>{item.judge}</span>
-            </div>
+              <Typography variant='body2'>
+                <span>{item.role}</span><span> </span><span>{item.judge}</span>
+              </Typography>
 
-
-            {/* <span>{item.status}</span> */}
-
-            <Link to={`${item.id}`}>ЗАЙТИ</Link>
-            <button onClick={() => deleteGame(item.numberGame)}>DELETE</button>
+            </Link>
+            <Button variant="contained" onClick={() => deleteGame(item.numberGame)}>Удалить</Button>
           </div>
         )
       })}

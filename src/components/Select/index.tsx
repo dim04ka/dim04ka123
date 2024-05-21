@@ -9,6 +9,7 @@ const Select = ({ role, cb }: { role: Role, cb: (role: Role) => void }) => {
     <select
       defaultValue={role}
       onChange={handle}
+      style={{ marginRight: 5 }}
     >
       <option value='red'>Red</option>
       <option value='mafia'>Mafia</option>
