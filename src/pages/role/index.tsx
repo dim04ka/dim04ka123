@@ -1,13 +1,14 @@
-import { ChangeEvent, useEffect, useState } from "react";
-import { Routes, Route, useParams } from 'react-router-dom'
+import { FunctionComponent, useEffect, useState } from "react";
+import { useParams } from 'react-router-dom'
 import { IGame, Item } from '../../interface'
 import Select from "../../components/Select";
 import { addDoc, collection } from "firebase/firestore";
 import { Role, IInfoGame } from "../../interface";
 import { token } from '../../consts'
-import { transformText } from '../../utils'
+import { transformText, getIcon } from '../../utils'
 import { useNavigate } from "react-router-dom";
-import { Typography } from '@mui/material';
+import { Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material';
+
 
 import { db } from '../../firestore/config'
 const RoleComponent = () => {
@@ -73,13 +74,6 @@ const RoleComponent = () => {
     }
   }
 
-  const getIcon = (role: Role) => {
-    if (role === 'don') return '⬛️';
-    if (role === 'sherif') return '👌'
-    if (role === 'mafia') return '⚫️'
-    return ''
-  }
-
   const handleClick = async () => {
 
     try {
@@ -109,7 +103,7 @@ const RoleComponent = () => {
 ▶️ Игра №: ${infoGame.numberGame}
 👨🏻‍⚖️ Ведущий: ${infoGame.role} ${infoGame.judge}
 
-${Object.values(formValues).map(item => `${item.id}. ${transformText(item.userName)}(${item.point}) ${getIcon(item.role)}\n`).join('')}
+${Object.values(formValues).map(item => `${item.id}. ${transformText(item.userName)} ${getIcon(item.role)}\n`).join('')}
 
 ${resultMatch === 'red' ? 'Победа мирных' : 'Победа черных'}
 ${comment}`
@@ -149,7 +143,6 @@ ${comment}`
   }
 
   const onInputChanges = (id: number, point: string) => {
-
     if (typeof id === 'number') {
       setFormValues((prevFormValues) => ({
         ...prevFormValues,
@@ -162,17 +155,40 @@ ${comment}`
 
 
   }
+
+  const [checked, setChecked] = useState<Record<string, boolean>>({
+    isShowRole: false,
+    isShowPoint: false
+  })
+  const handleChangeRole = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked({ ...checked, [event.target.name]: event.target.checked })
+  }
+
   return (
     <>
       <Typography variant='caption'> table:{id}</Typography>
+      <FormGroup style={{ flexDirection: 'row' }}>
+        <FormControlLabel
+          control={<Checkbox name='isShowRole' checked={checked['isShowRole']} onChange={handleChangeRole} />}
+          label="Роли"
+        />
+        <FormControlLabel
+          control={<Checkbox name='isShowPoint' checked={checked['isShowPoint']} onChange={handleChangeRole} />}
+          label="Очки"
+        />
+      </FormGroup>
       <hr />
       {game.map((item: Item) => {
-        return (<div style={{ display: 'flex', marginBottom: 5 }} key={item.id}>
-          <div style={{ marginRight: 5 }} > {item.userName === '' ? 'пусто' : item.userName}</div>
-          <Select role={item.role} cb={(role) => handleChange(item.id, role)} />
-
-          <input type="number" step={0.1} style={{ width: '50px' }} value={formValues[item.id]?.point} onChange={(e) => onInputChanges(item.id, e.target.value)} />
-        </div>)
+        return (
+          <GameItem
+            key={item.id}
+            isShowRole={checked.isShowRole}
+            isShowPoint={checked.isShowPoint}
+            item={item}
+            cbSelect={handleChange}
+            onInputChanges={onInputChanges}
+            formValues={formValues} />
+        )
       })}
       <hr />
       <div>
@@ -195,3 +211,12 @@ ${comment}`
 
 export default RoleComponent;
 
+
+export const GameItem = ({ isShowRole, isShowPoint, item, formValues, cbSelect, onInputChanges }: { isShowRole: boolean, isShowPoint: boolean, item: Item, formValues: Record<number, Item>, cbSelect: (id: number, role: Role) => void, onInputChanges: (id: number, value: string) => void }) => {
+  return (<div style={{ display: 'flex', marginBottom: 5 }}>
+    <div style={{ marginRight: 5 }} >{item.id} {item.userName === '' ? 'пусто' : item.userName}</div>
+    {isShowRole && <Select role={item.role} cb={(role) => cbSelect(item.id, role)} />}
+
+    {isShowPoint && <input type="number" step={0.1} style={{ width: '50px' }} value={formValues[item.id]?.point} onChange={(e) => onInputChanges(item.id, e.target.value)} />}
+  </div>)
+}

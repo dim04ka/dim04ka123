@@ -5,6 +5,7 @@ import { getDocs } from "firebase/firestore"
 import { useState } from "react"
 import { Item, IProject } from "../../interface"
 import CircularProgress from '@mui/material/CircularProgress';
+import { Typography } from '@mui/material';
 
 const Stats = () => {
   const [items, setItems] = useState<IProject[]>([])
@@ -25,16 +26,16 @@ const Stats = () => {
 
   return (
     <>
-      <h1>Stats</h1>
+      <Typography variant='h5'>Статистика игр</Typography>
 
       {loading ? <CircularProgress /> :
         items.map((item) => {
           return (
             <div key={item.id} style={{ border: '1px solid red' }}>
-              <p>{item.id}</p>
-              <p>{item.comment}</p>
-              <p>{item.resultMatch}</p>
-              <p>{Object.values(item.formValues).map((elem: Item) => `${elem.userName}(${elem.role}) ${elem.point}`).join(' ')}</p>
+              <p>ID игры: {item.id}</p>
+              <p>Победа: {item.resultMatch}</p>
+              <p>Комментарий: {item.comment}</p>
+              <p>{Object.values(item.formValues).map((elem: Item) => `${elem.userName}(${(elem.role)}) ${elem.point};`).join(' ')}</p>
             </div>
           )
         })

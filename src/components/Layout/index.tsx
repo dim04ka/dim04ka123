@@ -5,7 +5,7 @@ const Layout = () => {
   return (
     <div className="block">
       <div className="menu">
-        <Link to='games'>Игры вечера</Link>
+        <Link to='games' >Игры вечера</Link>
         <Link to='random-chair'>Рассадка</Link>
         <Link to='stats'>Статистика</Link>
       </div>
