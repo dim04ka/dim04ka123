@@ -52,8 +52,11 @@ const RandomChair = () => {
     refInput.current?.focus()
   }, [])
 
-  const getNumber = () => {
-    (function getRandomNumber(): void {
+  const getNumber = (e: any) => {
+    e.preventDefault();
+    console.log(111)
+
+    function getRandomNumber(): void {
       const randomValue = Math.floor(Math.random() * 10) + 1
 
       if (numbers.includes(randomValue)) {
@@ -76,7 +79,8 @@ const RandomChair = () => {
 
         setItems(list)
       }
-    })()
+    }
+    getRandomNumber()
     setUserName('')
     refInput.current?.focus()
 
@@ -270,17 +274,18 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
               </div>
             )
           }
+          <button className='button__clean' onClick={(e: any) => {
+            e.preventDefault();
+            setNumbers([])
+            setItems(() => initial)
+            setEdit(null)
+            localStorage.setItem('items', JSON.stringify(initial))
+            localStorage.setItem('numbers', JSON.stringify([]))
+          }}><i className="fa fa-trash-o"></i></button>
 
+          {numbers.length === 10 && !edit && <Button variant="contained" onClick={shake}>Перемешать</Button>}
         </form>
-        <button className='button__clean' onClick={() => {
-          setNumbers([])
-          setItems(() => initial)
-          setEdit(null)
-          localStorage.setItem('items', JSON.stringify(initial))
-          localStorage.setItem('numbers', JSON.stringify([]))
-        }}><i className="fa fa-trash-o"></i></button>
 
-        <Button variant="contained" onClick={shake}>Перемешать</Button>
 
       </header>
     </div>
