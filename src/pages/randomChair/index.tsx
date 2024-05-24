@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Item } from '../../interface'
 import List from '../../List';
 import { token } from '../../consts'
-import { transformText } from '../../utils'
+import { transformText, shuffle } from '../../utils'
+import Button from '@mui/material/Button';
 const initial: Item[] = []
 
 for (let i = 1; i < 11; i++) {
@@ -150,15 +151,6 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
     // })
 
 
-    // Перемешивание массива (используя алгоритм Фишера-Йетса)
-    function shuffle(array: Item[]) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
 
     // Перемешиваем массив игроков
     const players = shuffle([...items]);
@@ -183,19 +175,22 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
       localStorage.setItem('gameCreated', JSON.stringify([{ judge, role, numberGame, date: getDate(), id: dateNow, status: 'working', playersWithRole }]));
     }
 
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(obj)
-    }).then(res => {
-      if (res.status === 200) {
-        setNumbers([])
-        setItems(() => initial)
-        navigate('/games')
-      }
-    })
+    // await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify(obj)
+    // }).then(res => {
+    //   if (res.status === 200) {
+    //     setNumbers([])
+    //     setItems(() => initial)
+    //     navigate('/games')
+    //   }
+    // })
+    setNumbers([])
+    setItems(() => initial)
+    navigate('/games')
 
 
   }
@@ -207,6 +202,18 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
 
   const getDate = () => {
     return new Date().getHours() + ':' + new Date().getMinutes()
+  }
+
+  const shake = () => {
+    const players = shuffle([...items]);
+    const result = players.map((elem, inx) => {
+      return {
+        ...elem,
+        id: inx + 1
+      }
+    })
+    setItems(result)
+    localStorage.setItem('items', JSON.stringify(result))
   }
   return (
     <div className="App">
@@ -272,6 +279,8 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
           localStorage.setItem('items', JSON.stringify(initial))
           localStorage.setItem('numbers', JSON.stringify([]))
         }}><i className="fa fa-trash-o"></i></button>
+
+        <Button variant="contained" onClick={shake}>Перемешать</Button>
 
       </header>
     </div>

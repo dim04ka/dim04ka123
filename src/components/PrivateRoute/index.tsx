@@ -12,11 +12,9 @@ const PrivateRoute = ({ Component }: { Component: FC }) => {
     console.log('isAuthenticated', isAuthenticated)
     if (isAuthenticated === 'true') {
       setIsAuthenticated(true)
-      console.log(1)
     } else {
       setIsAuthenticated(false)
       localStorage.removeItem('isAuthenticated')
-      console.log(2)
     }
   }, [])
 
