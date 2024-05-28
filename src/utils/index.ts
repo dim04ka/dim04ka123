@@ -24,6 +24,15 @@ export const getIcon = (role: Role) => {
   return ''
 }
 
+// export const isWinMatch = (role: Role, resultMatch: 'mafia' | 'red' | 'none') => {
+//   if (role === 'mafia' || role === 'don') {
+//     return resultMatch === 'mafia' ? 1 : 0.3
+//   }
+//   if (role === 'sherif' || role === 'red') {
+//     return resultMatch === 'red' ? 1 : 0.3
+//   } 
+// }
+
 // Перемешивание массива (используя алгоритм Фишера-Йетса)
 export const shuffle = (array: Item[]) => {
   for (let i = array.length - 1; i > 0; i--) {

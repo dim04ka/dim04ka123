@@ -1,30 +1,28 @@
-import { useState, useEffect } from "react"
+import { FormEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { TEST_PASS, IS_AUTHENTICATED } from '../../consts'
 
 const Login = () => {
   const [value, setValue] = useState('')
   const navigate = useNavigate()
 
-  // useEffect(() => {
-  //   const isAuthenticated = localStorage.getItem('isAuthenticated')
-  //   if (isAuthenticated) {
-  //     navigate('/random-chair')
-  //   }
-  // }, [])
+  const handleEnter = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
 
-  const handleEnter = (e: any) => {
-    e.preventDefault();
-    if (value === '12345') {
-      localStorage.setItem('isAuthenticated', 'true')
-      navigate('/')
+    const formData = new FormData(event.currentTarget);
+    const { password } = Object.fromEntries(formData.entries());
+
+    if (password === TEST_PASS) {
+      localStorage.setItem(IS_AUTHENTICATED, 'true')
+      navigate('/stats')
     }
   }
   return (
-    <>
+    <form onSubmit={handleEnter}>
       <div>Login</div>
-      <input type="text" value={value} onChange={(e) => setValue(e.target.value)} />
-      <button type="submit" onClick={handleEnter}>Войти</button>
-    </>
+      <input type="text" value={value} name='password' onChange={(e) => setValue(e.target.value)} />
+      <button type="submit">Войти</button>
+    </form>
 
   )
 }

@@ -1,24 +1,25 @@
 import { FC, useEffect } from "react";
-import { Navigate } from "react-router-dom";
 import { useState } from 'react'
 import Login from '../../pages/Login'
+import { IS_AUTHENTICATED } from '../../consts'
 
 const PrivateRoute = ({ Component }: { Component: FC }) => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    const isAuthenticated = localStorage.getItem('isAuthenticated')
-    console.log('isAuthenticated', isAuthenticated)
+  const checkAuth = () => {
+    const isAuthenticated = localStorage.getItem(IS_AUTHENTICATED)
     if (isAuthenticated === 'true') {
       setIsAuthenticated(true)
     } else {
       setIsAuthenticated(false)
-      localStorage.removeItem('isAuthenticated')
+      localStorage.removeItem(IS_AUTHENTICATED)
     }
-  }, [])
+  }
 
-  // Your authentication logic goes here...
+  useEffect(() => {
+    checkAuth()
+  }, [])
 
   return isAuthenticated ? <Component /> : <Login />;
 };

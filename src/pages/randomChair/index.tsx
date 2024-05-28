@@ -2,9 +2,14 @@ import React, { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Item } from '../../interface'
 import List from '../../List';
-import { token } from '../../consts'
+import { GAMES, token } from '../../consts'
 import { transformText, shuffle } from '../../utils'
 import Button from '@mui/material/Button';
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import { db } from '../../firestore/config'
+
+import useGames from '../../hooks/useGames'
+
 const initial: Item[] = []
 
 for (let i = 1; i < 11; i++) {
@@ -35,6 +40,10 @@ const RandomChair = () => {
 
 
 
+  const { games, addGame } = useGames()
+
+
+
 
   useEffect(() => {
     const valueItems = localStorage.getItem('items')
@@ -54,7 +63,7 @@ const RandomChair = () => {
 
   const getNumber = (e: any) => {
     e.preventDefault();
-    console.log(111)
+
 
     function getRandomNumber(): void {
       const randomValue = Math.floor(Math.random() * 10) + 1
@@ -126,27 +135,27 @@ const RandomChair = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const date = new Date();
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
+    //     const date = new Date();
+    //     const day = date.getDate();
+    //     const month = date.getMonth() + 1;
+    //     const year = date.getFullYear();
 
-    const formattedDay = day < 10 ? `0${day}` : day;
-    const formattedMonth = month < 10 ? `0${month}` : month;
+    //     const formattedDay = day < 10 ? `0${day}` : day;
+    //     const formattedMonth = month < 10 ? `0${month}` : month;
 
-    const textDate = `${formattedDay}.${formattedMonth}.${year}`;
-    const obj = {
-      // chat_id: '518174528',
-      chat_id: '-1001768320094',
-      text:
-        `
-📆 ${textDate}
-▶️ Игра №: ${numberGame}
-👨🏻‍⚖️ Ведущий: ${role} ${judge}
+    //     const textDate = `${formattedDay}.${formattedMonth}.${year}`;
+    //     const obj = {
+    //       // chat_id: '518174528',
+    //       chat_id: '-1001768320094',
+    //       text:
+    //         `
+    // 📆 ${textDate}
+    // ▶️ Игра №: ${numberGame}
+    // 👨🏻‍⚖️ Ведущий: ${role} ${judge}
 
-${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
-      `
-    };
+    // ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
+    //       `
+    //     };
 
     // await fetch(`https://api.telegram.org/bot${token}/getUpdates`).then((res) => {
 
@@ -170,14 +179,25 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
       if (i > 3) playersWithRole[i].role = 'red';
     }
 
-    const gameCreated = localStorage.getItem('gameCreated');
-    const dateNow = Date.now()
-    if (gameCreated) {
-      const games = JSON.parse(gameCreated);
-      localStorage.setItem('gameCreated', JSON.stringify([...games, { judge, role, numberGame, date: getDate(), id: dateNow, status: 'working', playersWithRole }]));
-    } else {
-      localStorage.setItem('gameCreated', JSON.stringify([{ judge, role, numberGame, date: getDate(), id: dateNow, status: 'working', playersWithRole }]));
-    }
+    // const value = collection(db, "games")
+
+    // const querySnapshot = await getDocs(value)
+    // const projects = querySnapshot.docs.map(doc => doc.data());
+    // console.log('projects', projects)
+
+
+    // await addDoc(collection(db, GAMES), )
+
+    addGame({ judge, role, numberGame, date: getDate(), id: Date.now().toString(), status: 'working', playersWithRole })
+
+    // const gameCreated = localStorage.getItem('gameCreated');
+    // const dateNow = Date.now()
+    // if (gameCreated) {
+    //   const games = JSON.parse(gameCreated);
+    //   localStorage.setItem('gameCreated', JSON.stringify([...games, { judge, role, numberGame, date: getDate(), id: dateNow, status: 'working', playersWithRole }]));
+    // } else {
+    //   localStorage.setItem('gameCreated', JSON.stringify([{ judge, role, numberGame, date: getDate(), id: dateNow, status: 'working', playersWithRole }]));
+    // }
 
     // await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     //   method: "POST",
@@ -192,8 +212,10 @@ ${items.map(item => `${item.id}. ${transformText(item.userName)}\n`).join('')}
     //     navigate('/games')
     //   }
     // })
-    setNumbers([])
-    setItems(() => initial)
+
+
+    // setNumbers([])
+    // setItems(() => initial)
     navigate('/games')
 
 

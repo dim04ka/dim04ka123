@@ -3,45 +3,36 @@ import { Link } from "react-router-dom";
 import './style.scss'
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
+import { addDoc, collection, getDocs, doc } from "firebase/firestore";
+import { db } from '../../firestore/config'
+import { useGames } from '../../hooks/useGames'
+import { IGame, IInfoGame } from "../../interface";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Games = () => {
-  const [items, setItems] = useState([])
-
-  useEffect(() => {
-    const gameCreated = localStorage.getItem('gameCreated');
-    if (typeof gameCreated === 'string') {
-      const games = JSON.parse(gameCreated);
-      setItems(games)
-    }
-  }, [])
-
-
-
-  const deleteGame = (numberGame: number) => {
-    const newItems = items.filter((item: any) => item.numberGame !== numberGame)
-    localStorage.setItem('gameCreated', JSON.stringify(newItems))
-    setItems(newItems)
-  }
+  const { games, loading, deleteGame } = useGames()
   return (
     <>
       <h1>Игры вечера</h1>
+      {
+        loading ? <CircularProgress /> :
+          games.map((item: IInfoGame) => {
+            return (
+              <div key={item.id} className="game">
+                <Link to={`${item.id}`}>
+                  <div><Typography variant='button'>Игра № {item.numberGame} </Typography></div>
+                  <Typography variant='body2'>{(item.date)} </Typography>
 
-      {items.map((item: any) => {
-        return (
-          <div key={item.numberGame} className="game">
-            <Link to={`${item.id}`}>
-              <div><Typography variant='button'>Игра № {item.numberGame} </Typography></div>
-              <Typography variant='body2'>{(item.date)} </Typography>
+                  <Typography variant='body2'>
+                    <span>{item.role}</span><span> </span><span>{item.judge}</span>
+                  </Typography>
 
-              <Typography variant='body2'>
-                <span>{item.role}</span><span> </span><span>{item.judge}</span>
-              </Typography>
-
-            </Link>
-            <Button variant="contained" onClick={() => deleteGame(item.numberGame)}>Удалить</Button>
-          </div>
-        )
-      })}
+                </Link>
+                <Button variant="contained" onClick={() => deleteGame(item.id_doc!)}>Удалить</Button>
+              </div>
+            )
+          })
+      }
     </>
 
   )

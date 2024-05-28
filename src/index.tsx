@@ -11,6 +11,7 @@ import Stats from './pages/stats'
 import Role from './pages/role'
 import PrivateRoute from './components/PrivateRoute'
 import Login from './pages/Login'
+import Players from './pages/players';
 import './App.css';
 
 const root = ReactDOM.createRoot(
@@ -27,6 +28,7 @@ root.render(
           <Route path="stats" element={<Stats />} />
           <Route path="games/:id" element={<PrivateRoute Component={Role} />} />
           <Route path="random-chair" element={<PrivateRoute Component={RandomChair} />} />
+          <Route path="players" element={<PrivateRoute Component={Players} />} />
           <Route path="login" element={<Login />} />
           <Route path="*" element={<NoPage />} />
         </Route>

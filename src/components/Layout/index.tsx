@@ -8,6 +8,7 @@ const Layout = () => {
         <Link to='games' >Игры вечера</Link>
         <Link to='random-chair'>Рассадка</Link>
         <Link to='stats'>Статистика</Link>
+        <Link to='players'>Игроки</Link>
       </div>
 
       <Outlet />

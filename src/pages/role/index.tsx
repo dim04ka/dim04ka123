@@ -2,153 +2,128 @@ import { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom'
 import { IGame, Item } from '../../interface'
 import Select from "../../components/Select";
-import { addDoc, collection } from "firebase/firestore";
 import { Role, IInfoGame } from "../../interface";
 import { token } from '../../consts'
 import { transformText, getIcon, getDate } from '../../utils'
 import { useNavigate } from "react-router-dom";
 import { Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
-
-
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { db } from '../../firestore/config'
+import useGames from "../../hooks/useGames";
+
 const RoleComponent = () => {
   let { id } = useParams();
+
+  const { games } = useGames()
+
   const [game, setGame] = useState<Item[]>([])
+  const [infoGame, setInfoGame] = useState<IInfoGame>()
 
   const [formValues, setFormValues] = useState<Record<number, Item>>({})
 
   const [resultMatch, setResultMatch] = useState<string>('none')
   const [comment, setComment] = useState<string>('')
-  let navigate = useNavigate();
-
 
   useEffect(() => {
-    const items = localStorage.getItem('gameCreated');
-    const games = items && JSON.parse(items);
-    const game = games && games.find((item: IGame) => item.id === Number(id))
-    const temp: Item[] = game.playersWithRole.sort((a: Item, b: Item) => a.id - b.id)
+    const current_game = games.filter(game => game.id === id)
+    const playersWithRole = current_game[0]?.playersWithRole.sort((a: Item, b: Item) => a.id - b.id)
+
+
+
 
     const result: any = {}
-
-    for (let i = 1; i < temp.length + 1; i++) {
-      const element = temp.find((el: Item) => el.id === i)
-      if (element) {
-        result[`${i}`] = { ...element, point: isWinMatch(element.role) }
+    if (playersWithRole?.length > 0) {
+      for (let i = 1; i < playersWithRole.length + 1; i++) {
+        const element = playersWithRole.find((el: Item) => el.id === i)
+        if (element) {
+          result[`${i}`] = { ...element, point: 0 }
+        }
       }
-    }
-
-    const values: Item[] = []
-    for (const key in result) {
-      values.push(result[key])
     }
 
     setFormValues(result)
-    setGame(values)
-  }, [resultMatch])
+    setGame(playersWithRole)
+    setInfoGame(current_game[0])
 
-  useEffect(() => {
-    const items = localStorage.getItem('gameCreated');
-    const games = items && JSON.parse(items);
-    const game = games && games.find((item: IGame) => item.id === Number(id))
-    const temp: Item[] = game.playersWithRole.sort((a: Item, b: Item) => a.id - b.id)
 
-    const result: any = {}
-    if (temp) {
-      for (let i = 1; i < temp.length + 1; i++) {
-        const element = temp.find((el: Item) => el.id === i)
-        if (element) {
-          result[`${i}`] = { ...element, point: isWinMatch(element.role) }
-        }
-      }
-      setFormValues(result)
-      setGame(temp)
-    }
-  }, [])
 
-  const isWinMatch = (role: Role) => {
-    if (role === 'mafia' || role === 'don') {
-      return resultMatch === 'mafia' ? 1 : 0.3
-    }
-    if (role === 'sherif' || role === 'red') {
-      return resultMatch === 'red' ? 1 : 0.3
-    }
-  }
-
-  const handleClick = async () => {
-
-    try {
-      await addDoc(collection(db, 'mafia'), { id, formValues, comment, resultMatch, date: new Date() })
-      const gameCreated = localStorage.getItem('gameCreated');
-      const items = localStorage.getItem('gameCreated');
-      const games = items && JSON.parse(items);
-      const infoGame: IInfoGame = games && games.find((item: IGame) => item.id === Number(id))
-      if (typeof gameCreated === 'string') {
-        const games = JSON.parse(gameCreated);
-        const newItems = games.filter((item: Item) => item.id !== infoGame.id)
-        localStorage.setItem('gameCreated', JSON.stringify(newItems))
-        navigate('/games')
-
-      }
+  }, [games, id])
 
 
 
 
-      //       const obj = {
-      //         chat_id: '518174528', // home
-      //         // chat_id: '-1001768320094', // work
-      //         text:
-      //           `
-      // 📆 ${getDate()}
-      // ▶️ Игра №: ${infoGame.numberGame}
-      // 👨🏻‍⚖️ Ведущий: ${infoGame.role} ${infoGame.judge}
+  // useEffect(() => {
+  //   const items = localStorage.getItem('gameCreated');
+  //   const games = items && JSON.parse(items);
+  //   const game = games && games.find((item: IGame) => item.id === Number(id))
+  //   const temp: Item[] = game.playersWithRole.sort((a: Item, b: Item) => a.id - b.id)
 
-      // ${Object.values(formValues).map(item => `${item.id}. ${transformText(item.userName)} ${getIcon(item.role)}\n`).join('')}
+  //   const result: any = {}
 
-      // ${resultMatch === 'red' ? 'Победа мирных' : 'Победа черных'}
-      // ${comment}`
-      //       };
+  //   for (let i = 1; i < temp.length + 1; i++) {
+  //     const element = temp.find((el: Item) => el.id === i)
+  //     if (element) {
+  //       result[`${i}`] = { ...element, point: isWinMatch(element.role) }
+  //     }
+  //   }
 
-      // await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify(obj)
-      // }).then(res => {
-      //   if (res.status === 200) {
-      //     const gameCreated = localStorage.getItem('gameCreated');
-      //     if (typeof gameCreated === 'string') {
-      //       const games = JSON.parse(gameCreated);
-      //       const newItems = games.filter((item: Item) => item.id !== infoGame.id)
-      //       localStorage.setItem('gameCreated', JSON.stringify(newItems))
-      //       navigate('/games')
+  //   const values: Item[] = []
+  //   for (const key in result) {
+  //     values.push(result[key])
+  //   }
 
-      //     }
-      //   }
-      // })
+  //   setFormValues(result)
+  //   setGame(values)
+  // }, [resultMatch])
 
-    } catch (err) {
-    }
-  }
+
+  // const getValue = async () => {
+  //   const value = collection(db, "games")
+  //   // const test = value.
+
+  //   const querySnapshot = await getDocs(value)
+
+  //   const projects = querySnapshot.docs.map(doc => doc.data()) as IGame[]
+
+  //   console.log('projects', projects)
+
+  //   // const test = projects.find((item: IGame) => item.id === Number(id))
+  //   return []
+
+  // }
+
+
+
+
+  // const handleClick = async () => {
+
+  //   try {
+  //     await addDoc(collection(db, 'mafia'), { id, formValues, comment, resultMatch, date: new Date() })
+  //     const gameCreated = localStorage.getItem('gameCreated');
+  //     const items = localStorage.getItem('gameCreated');
+  //     const games = items && JSON.parse(items);
+  //     // const infoGame: IInfoGame = games && games.find((item: IGame) => item.id === Number(id))
+  //     if (typeof gameCreated === 'string') {
+  //       const games = JSON.parse(gameCreated);
+  //       // const newItems = games.filter((item: Item) => item.id !== infoGame.id)
+  //       // localStorage.setItem('gameCreated', JSON.stringify(newItems))
+  //       navigate('/games')
+  //     }
+  //   } catch (err) {
+  //   }
+  // }
 
   const message = async () => {
 
     try {
-      const items = localStorage.getItem('gameCreated');
-      const games = items && JSON.parse(items);
-      const infoGame: IInfoGame = games && games.find((item: IGame) => item.id === Number(id))
-
-
-
       const obj = {
         // chat_id: '518174528', // home
         chat_id: '-1001768320094', // work
-        text:
-          `
+        text: `
 📆 ${getDate()}
-▶️ Игра №: ${infoGame.numberGame}
-👨🏻‍⚖️ Ведущий: ${infoGame.role} ${infoGame.judge}
+▶️ Игра №: ${infoGame?.numberGame}
+👨🏻‍⚖️ Ведущий: ${infoGame?.role} ${infoGame?.judge}
 
 ${Object.values(formValues).map(item => `${item.id}. ${transformText(item.userName)} ${checked.isShowRole ? getIcon(item.role) : ''}\n`).join('')}
 
@@ -170,7 +145,8 @@ ${comment}`
 
   const handleChange = (id: number, role: Role) => {
     if (typeof id === 'number') {
-      setFormValues({ ...formValues, [id]: { ...formValues[id], role } })
+      const data = { ...formValues, [id]: { ...formValues[id], role } }
+      setFormValues(data)
     } else {
       console.error('Invalid id type. Expected a number.');
     }
@@ -212,7 +188,7 @@ ${comment}`
         />
       </FormGroup>
       <hr />
-      {game.map((item: Item) => {
+      {game && game.map((item: Item) => {
         return (
           <GameItem
             key={item.id}
@@ -241,6 +217,7 @@ ${comment}`
       <hr />
       <Button variant="contained" onClick={message}>отправить в телегу</Button>
       {/* <Button variant="contained" onClick={handleClick}>сохранить</Button> */}
+      {/* <h2>{JSON.stringify(formValues)}</h2> */}
     </>
   )
 }
@@ -254,5 +231,6 @@ export const GameItem = ({ isShowRole, isShowPoint, item, formValues, cbSelect, 
     {isShowRole && <Select role={item.role} cb={(role) => cbSelect(item.id, role)} />}
 
     {isShowPoint && <input type="number" step={0.1} style={{ width: '50px' }} value={formValues[item.id]?.point} onChange={(e) => onInputChanges(item.id, e.target.value)} />}
+
   </div>)
 }

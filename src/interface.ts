@@ -7,8 +7,8 @@ export interface Item {
 }
 
 export interface IGame {
-  id: number;
-  items: Item[]
+  id: string
+  games: IInfoGame[]
 }
 
 
@@ -25,7 +25,8 @@ export interface IProject {
 
 export interface IInfoGame {
   date: string
-  id: number
+  id: string
+  id_doc?: string
   judge: string
   numberGame: string
   playersWithRole: Item[]
@@ -33,3 +34,8 @@ export interface IInfoGame {
   status: string
 }
 
+
+export interface IPlayer {
+  id: string
+  name: string
+}
