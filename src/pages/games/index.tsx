@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react"
+
 import { Link } from "react-router-dom";
 import './style.scss'
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
-import { addDoc, collection, getDocs, doc } from "firebase/firestore";
-import { db } from '../../firestore/config'
 import { useGames } from '../../hooks/useGames'
-import { IGame, IInfoGame } from "../../interface";
+import { IInfoGame } from "../../interface";
 import CircularProgress from '@mui/material/CircularProgress';
 
 const Games = () => {
