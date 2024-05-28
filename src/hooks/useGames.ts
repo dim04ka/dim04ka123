@@ -15,7 +15,7 @@ export const useGames = (): { games: IInfoGame[], loading: boolean, deleteGame: 
       const items: IInfoGame[] = []
       const querySnapshot = await getDocs(collection(db, GAMES));
       querySnapshot.forEach((doc: any) => {
-        items.push({ id_doc: doc.id, ...doc.data() });
+        items.push({ id_doc: doc.id, ...doc.data(), playersWithRole: doc.data().playersWithRole });
       });
       setGames(items);
     } catch (error) {
@@ -34,6 +34,7 @@ export const useGames = (): { games: IInfoGame[], loading: boolean, deleteGame: 
       console.error(error);
     } finally {
       setLoading(false)
+      loadGames()
     }
   };
 
@@ -46,6 +47,7 @@ export const useGames = (): { games: IInfoGame[], loading: boolean, deleteGame: 
       console.error(error);
     } finally {
       setLoading(false)
+      loadGames()
     }
   }
 
