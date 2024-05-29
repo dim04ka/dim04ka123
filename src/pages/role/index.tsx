@@ -110,7 +110,7 @@ ${comment}`
   return (
 
     <form>
-      <Typography variant='caption'> table:{id} {loading ? 'true' : 'false'}</Typography>
+      <Typography variant='caption'> table:{id}</Typography>
       <FormGroup style={{ flexDirection: 'row' }}>
         <FormControlLabel
           control={<Checkbox name='isShowRole' checked={checked['isShowRole']} onChange={handleChangeRole} />}
@@ -140,7 +140,7 @@ ${comment}`
 
       {
         !checked.isShowRole ? null :
-          <div>
+          <div className="result-game">
             <span>Победа &nbsp;</span>
             <select
               value={resultMatch}

@@ -39,3 +39,8 @@ export interface IPlayer {
   id: string
   name: string
 }
+
+export interface INavigation {
+  to: string;
+  title: string;
+}
