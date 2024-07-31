@@ -15,12 +15,12 @@ export const MENU = [
     to: 'random-chair',
     title: 'Рассадка'
   },
-  {
-    to: 'stats',
-    title: 'Статистика'
-  },
-  {
-    to: 'players',
-    title: 'Игроки'
-  },
+  // {
+  //   to: 'stats',
+  //   title: 'Статистика'
+  // },
+  // {
+  //   to: 'players',
+  //   title: 'Игроки'
+  // },
 ]

@@ -12,8 +12,11 @@ const Games = () => {
   return (
     <>
       <h1>Игры вечера</h1>
-      {
-        loading ? <CircularProgress /> :
+        {
+            games.length === 0 ? <div>Нет начавшихся игр</div> : null
+        }
+        {
+            loading ? <CircularProgress /> :
           games.map((item: IInfoGame) => {
             return (
               <div key={item.id} className="game">

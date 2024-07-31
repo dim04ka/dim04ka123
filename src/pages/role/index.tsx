@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import { Item } from '../../interface'
 import Select from "../../components/Select";
 import { Role, IInfoGame } from "../../interface";
@@ -13,6 +13,8 @@ import './style.scss'
 
 const RoleComponent = () => {
   let { id } = useParams();
+
+  const navigate = useNavigate()
 
   const { games, updateGame, loading } = useGames()
   const [game, setGame] = useState<Item[]>([])
@@ -58,8 +60,8 @@ const RoleComponent = () => {
 
     try {
       const obj = {
-        // chat_id: '518174528', // home
-        chat_id: '-1001768320094', // work
+         chat_id: '518174528', // home
+        // chat_id: '-1001768320094', // work
         text: `
 📆 ${getDate()}
 ▶️ Игра №: ${infoGame?.numberGame}
@@ -77,6 +79,7 @@ ${comment}`
         },
         body: JSON.stringify(obj)
       })
+      navigate('/games')
 
     } catch (err) {
     }
