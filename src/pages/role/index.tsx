@@ -60,8 +60,8 @@ const RoleComponent = () => {
 
     try {
       const obj = {
-         chat_id: '518174528', // home
-        // chat_id: '-1001768320094', // work
+         // chat_id: '518174528', // home
+        chat_id: '-1001768320094', // work
         text: `
 📆 ${getDate()}
 ▶️ Игра №: ${infoGame?.numberGame}
