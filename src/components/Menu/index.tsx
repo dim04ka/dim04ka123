@@ -8,7 +8,7 @@ const Menu = () => {
   return (
     <div className="menu">
       {MENU.map((menu: INavigation) => {
-        return <NavLink to={menu.to} className={({ isActive, isPending }) =>
+        return <NavLink key={menu.title} to={menu.to} className={({ isActive, isPending }) =>
           isPending ? "pending" : isActive ? "active" : ""
         }>{menu.title}</NavLink>
       })

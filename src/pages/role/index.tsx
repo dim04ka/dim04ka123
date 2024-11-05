@@ -95,7 +95,14 @@ ${comment}`
     }
   }
 
-  const onInputChanges = (id: number, point: string) => {
+  const onInputChanges = (id:number, name: string) => {
+
+    const current = game.filter(games => games.id === id)
+    const res: Item = { ...current[0], userName: name }
+    if (infoGame && infoGame.id_doc) {
+      updateGame(infoGame.id_doc, res)
+    }
+
     // if (typeof id === 'number') {
     //   setFormValues((prevFormValues) => ({
     //     ...prevFormValues,
@@ -135,7 +142,7 @@ ${comment}`
                 isShowPoint={checked.isShowPoint}
                 item={item}
                 cbSelect={handleChange}
-                onInputChanges={onInputChanges}
+                changeValue={(name) => onInputChanges(item.id, name)}
               />
             )
           })}
@@ -171,15 +178,42 @@ ${comment}`
 export default RoleComponent;
 
 
-export const GameItem = ({ isShowRole, isShowPoint, item, cbSelect, onInputChanges }:
+export const GameItem = ({ isShowRole, isShowPoint, item, cbSelect, changeValue }:
   {
     item: Item, isShowRole: boolean, isShowPoint: boolean,
-    cbSelect: (id: number, role: Role) => void, onInputChanges: (id: number, value: string) => void
+    cbSelect: (id: number, role: Role) => void, changeValue: (value: string) => void
   }) => {
-  return (<div style={{ display: 'flex', marginBottom: 5 }}>
-    <div style={{ marginRight: 5 }} >{item.id} {item.userName === '' ? 'пусто' : item.userName}</div>
+  const [isDisabled, setDisabled] = useState<boolean>(true)
+  const [value, setValue] = useState<string>()
 
-    {isShowRole && <Select role={item.role} cb={(role) => cbSelect(item.id, role)} />}
+  const handle = (e:any) => {
+    e.preventDefault()
+
+    if (isDisabled) {
+      setDisabled(false)
+
+
+    } else {
+      setDisabled(true)
+      changeValue(value || '')
+    }
+
+
+  }
+
+  useEffect(() => {
+    setValue(item.userName)
+  }, [item.userName]);
+
+  return (<div style={{ display: 'flex', marginBottom: 5 }}>
+
+    <label style={{display: "flex", alignItems: 'center'}}>
+      <span style={{width: "20px"}}>{item.id}</span>
+      <input style={{margin: '0 5px'}}  onChange={e =>setValue(e.target.value) }  disabled={isDisabled} value={value}></input>
+      <button onClick={(e) => handle(e)}>{isDisabled ? 'Edit' : 'Save' }</button>
+    </label>
+
+    {isShowRole && <Select role={item.role} cb={(role) => cbSelect(item.id, role)}/>}
 
     {/* {isShowPoint && <input type="number" step={0.1} style={{ width: '50px' }} value={item.point} onChange={(e) => onInputChanges(item.id, e.target.value)} />} */}
 

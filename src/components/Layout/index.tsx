@@ -5,6 +5,7 @@ import Menu from '../Menu'
 const Layout = () => {
   return (
     <div className="block">
+        {/*MAIN*/}
       <Menu />
       <Outlet />
     </div>
