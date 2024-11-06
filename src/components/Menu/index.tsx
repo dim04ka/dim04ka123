@@ -1,10 +1,18 @@
-import { MENU } from '../../consts'
+import {CLUB, IS_AUTHENTICATED, MENU} from '../../consts'
 import { INavigation } from '../../interface'
-import { NavLink } from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import './style.scss'
 
 
 const Menu = () => {
+    const navigate = useNavigate()
+    const handleClick = () => {
+        localStorage.removeItem(CLUB)
+        localStorage.removeItem(IS_AUTHENTICATED)
+        navigate('random-chair')
+        window.location.reload();
+
+    }
   return (
     <div className="menu">
       {MENU.map((menu: INavigation) => {
@@ -13,6 +21,7 @@ const Menu = () => {
         }>{menu.title}</NavLink>
       })
       }
+      <button onClick={() => handleClick()}>Выйти</button>
     </div>
   )
 

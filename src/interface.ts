@@ -32,6 +32,7 @@ export interface IInfoGame {
   playersWithRole: Item[]
   role: string
   status: string
+  club?: string
 }
 
 

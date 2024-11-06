@@ -1,10 +1,13 @@
 .menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   margin-bottom: 10px;
   a {
     margin-right: 10px;
     text-decoration: none;
     color: black;
-  
+
   }
   a.active {
     color: rgb(171, 42, 42);

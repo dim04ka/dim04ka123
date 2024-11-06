@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { TEST_PASS, IS_AUTHENTICATED } from '../../consts'
+import { IS_AUTHENTICATED, CLUB_LEO_KING, CLUB_OLE_FLOW, CLUB} from '../../consts'
 import { Button, Input, Space } from 'antd';
 
 
@@ -15,10 +15,14 @@ const Login = () => {
   const handleEnter = (event: FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
     setError(false)
-    if (value === TEST_PASS) {
-      localStorage.setItem(IS_AUTHENTICATED, 'true')
-      navigate('/random-chair')
-      window.location.reload()
+    if (value) {
+      if (value === CLUB_LEO_KING || value === CLUB_OLE_FLOW) {
+        localStorage.setItem(IS_AUTHENTICATED, 'true')
+        localStorage.setItem(CLUB, value)
+        navigate('/random-chair')
+        window.location.reload()
+      }
+
     } else {
       setError(true)
     }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { addDoc, collection, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from '../firestore/config'
-import { GAMES } from '../consts'
+import {CLUB, GAMES} from '../consts'
 import { IInfoGame, Item } from '../interface';
 
 
@@ -17,7 +17,9 @@ export const useGames = (): { games: IInfoGame[], loading: boolean, deleteGame: 
       querySnapshot.forEach((doc: any) => {
         items.push({ id_doc: doc.id, ...doc.data(), playersWithRole: doc.data().playersWithRole });
       });
-      setGames(items);
+      const club = localStorage.getItem(CLUB)
+      const filteredItems = items.filter(el => el.club === club)
+      setGames(filteredItems);
     } catch (error) {
       console.error(error);
     } finally {
@@ -39,9 +41,10 @@ export const useGames = (): { games: IInfoGame[], loading: boolean, deleteGame: 
   };
 
   const addGame = async (game: IInfoGame) => {
+    const club = localStorage.getItem(CLUB)
     try {
       setLoading(true)
-      await addDoc(collection(db, GAMES), game)
+      await addDoc(collection(db, GAMES), {...game, club})
       setLoading(false)
     } catch (error) {
       console.error(error);

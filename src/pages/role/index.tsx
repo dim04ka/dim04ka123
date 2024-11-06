@@ -3,7 +3,7 @@ import {useNavigate, useParams} from 'react-router-dom'
 import { Item } from '../../interface'
 import Select from "../../components/Select";
 import { Role, IInfoGame } from "../../interface";
-import { token } from '../../consts'
+import {CLUB, CLUB_LEO_KING, CLUB_OLE_FLOW, token} from '../../consts'
 import { transformText, getIcon, getDate } from '../../utils'
 import { Checkbox, FormControlLabel, FormGroup, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -55,13 +55,20 @@ const RoleComponent = () => {
     return ''
   }
 
+  const getChatId = () => {
+    const club = localStorage.getItem(CLUB)
+    if (club === CLUB_LEO_KING) return '-1001768320094'
+    if (club === CLUB_OLE_FLOW) return '-1002143047041'
+  }
+
+
 
   const message = async () => {
 
     try {
       const obj = {
          // chat_id: '518174528', // home
-        chat_id: '-1001768320094', // work
+        chat_id: getChatId(),
         text: `
 📆 ${getDate()}
 ▶️ Игра №: ${infoGame?.numberGame}
