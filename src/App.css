@@ -12,7 +12,7 @@
   padding-top: 20px;
   font-size: calc(10px + 2vmin);
   color: white;
-  background-image: url('./mafia.gif');
+  /*background-image: url('./mafia.gif');*/
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -47,7 +47,7 @@
   flex-direction: column;
   gap: 10px;
   align-items: center;
-  
+
 }
 .button__random{
   width: 120px;
@@ -67,13 +67,22 @@
 .input{
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
+
+.input label {
+  margin-bottom: 5px;
+}
+
 
 .button__submit{
   width: 70px;
   height: 70px;
-  margin-top: 20px;
   font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px auto;
 }
 
 .button__submit-changes {
