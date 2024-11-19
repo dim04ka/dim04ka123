@@ -18,9 +18,9 @@ export const transformText = (name: string) => {
 
 
 export const getIcon = (role: Role) => {
-  if (role === 'don') return '⬛️';
-  if (role === 'sherif') return '👌'
-  if (role === 'mafia') return '⚫️'
+  if (role === 'don') return '🎩';
+  if (role === 'sherif') return '👮'
+  if (role === 'mafia') return '👎🏾'
   return ''
 }
 
@@ -30,7 +30,7 @@ export const getIcon = (role: Role) => {
 //   }
 //   if (role === 'sherif' || role === 'red') {
 //     return resultMatch === 'red' ? 1 : 0.3
-//   } 
+//   }
 // }
 
 // Перемешивание массива (используя алгоритм Фишера-Йетса)
