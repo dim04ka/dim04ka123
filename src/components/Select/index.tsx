@@ -11,11 +11,7 @@ const Select = ({
         cb(e.target.value)
     }
     return (
-        <select
-            onChange={handle}
-            style={{ marginRight: 5 }}
-            value={role}
-        >
+        <select onChange={handle} value={role}>
             <option value="red">Red</option>
             <option value="mafia">Mafia</option>
             <option value="don">Don</option>

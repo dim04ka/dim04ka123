@@ -1,31 +1,32 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
-import {
-    Checkbox,
-    FormControlLabel,
-    FormGroup,
-    Typography,
-} from '@mui/material'
-import Button from '@mui/material/Button'
+import { Checkbox, FormControlLabel, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 
-import Select from '@/components/Select'
 import useGames from '@/hooks/useGames'
-import '@/pages/role/style.scss'
-import {
-    CLUB,
-    CLUB_LEO_KING,
-    CLUB_OLE_FLOW,
-    token,
-} from '@/shared/consts'
 import { IInfoGame, Item, Role } from '@/shared/domain/interface'
-import { getDate, getIcon, transformText } from '@/shared/utils'
+
+import { GameItem } from './components/game-item'
+import { useTelegramMessage } from './hooks/useTelegramMessage'
+import {
+    StyledDivider,
+    StyledForm,
+    StyledFormGroup,
+    StyledResultGame,
+    StyledResultSelect,
+    StyledSubmitButton,
+    StyledTextarea,
+} from './styles'
+
+type CheckedState = {
+    isShowRole: boolean
+}
+
+type ResultMatch = 'none' | 'red' | 'mafia'
 
 export const RolePage = () => {
-    let { id } = useParams()
-
-    const navigate = useNavigate()
+    const { id } = useParams<{ id: string }>()
 
     const { games, updateGame, loading } = useGames()
     const [game, setGame] = useState<Item[]>([])
@@ -33,252 +34,158 @@ export const RolePage = () => {
     const [formValues, setFormValues] = useState<
         Record<number, Item>
     >({})
-    const [resultMatch, setResultMatch] = useState<string>('none')
+    const [resultMatch, setResultMatch] =
+        useState<ResultMatch>('none')
     const [comment, setComment] = useState<string>('')
-    const [checked, setChecked] = useState<Record<string, boolean>>({
+    const [checked, setChecked] = useState<CheckedState>({
         isShowRole: false,
-        isShowPoint: false,
     })
+
+    const { sendMessage } = useTelegramMessage({
+        formValues,
+        infoGame,
+        checked,
+        resultMatch,
+        comment,
+    })
+
     const handleChangeRole = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        setChecked({
-            ...checked,
+        setChecked((prev) => ({
+            ...prev,
             [event.target.name]: event.target.checked,
-        })
+        }))
     }
 
     useEffect(() => {
-        const current_game = games.filter((game) => game.id === id)
-        const playersWithRole = current_game[0]?.playersWithRole.sort(
+        const currentGame = games.find((game) => game.id === id)
+        if (!currentGame) return
+
+        const playersWithRole = [...currentGame.playersWithRole].sort(
             (a: Item, b: Item) => a.id - b.id
         )
-        const result: any = {}
-        if (playersWithRole?.length > 0) {
+
+        const result: Record<number, Item> = {}
+        if (playersWithRole.length > 0) {
             for (let i = 1; i < playersWithRole.length + 1; i++) {
                 const element = playersWithRole.find(
                     (el: Item) => el.id === i
                 )
                 if (element) {
-                    result[`${i}`] = { ...element, point: 0 }
+                    result[i] = { ...element, point: 0 }
                 }
             }
         }
 
         setFormValues(result)
         setGame(playersWithRole)
-        setInfoGame(current_game[0])
+        setInfoGame(currentGame)
     }, [games, id])
 
-    const getResultMatch = (): string => {
-        if (checked.isShowRole) {
-            return resultMatch === 'none'
-                ? ''
-                : resultMatch === 'red'
-                  ? 'Победа мирных'
-                  : 'Победа черных'
+    const handleRoleChange = (id: number, role: Role) => {
+        const currentPlayer = game.find((player) => player.id === id)
+        if (!currentPlayer || !infoGame?.id_doc) return
+
+        const updatedPlayer: Item = { ...currentPlayer, role }
+        updateGame(infoGame.id_doc, updatedPlayer)
+    }
+
+    const handleInputChange = (id: number, name: string) => {
+        const currentPlayer = game.find((player) => player.id === id)
+        if (!currentPlayer || !infoGame?.id_doc) return
+
+        const updatedPlayer: Item = {
+            ...currentPlayer,
+            userName: name,
         }
-        return ''
-    }
-
-    const getChatId = () => {
-        const club = localStorage.getItem(CLUB)
-        if (club === CLUB_LEO_KING) return '-1001768320094'
-        if (club === CLUB_OLE_FLOW) return '-1002143047041'
-    }
-
-    const message = async () => {
-        try {
-            const obj = {
-                // chat_id: '518174528', // home
-                chat_id: getChatId(),
-                text: `
-📆 ${getDate()}
-▶️ Игра №: ${infoGame?.numberGame}
-👨🏻‍⚖️ Ведущий: ${infoGame?.role} ${infoGame?.judge}
-
-${Object.values(formValues)
-    .map(
-        (item) =>
-            `${item.id}. ${transformText(item.userName)} ${checked.isShowRole ? getIcon(item.role) : ''}\n`
-    )
-    .join('')}
-
-${getResultMatch()}
-${comment}`,
-            }
-            await fetch(
-                `https://api.telegram.org/bot${token}/sendMessage`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(obj),
-                }
-            )
-            navigate('/games')
-        } catch (err) {}
-    }
-
-    const handleChange = (id: number, role: Role) => {
-        const current = game.filter((games) => games.id === id)
-        const res: Item = { ...current[0], role: role }
-
-        if (infoGame && infoGame.id_doc) {
-            updateGame(infoGame.id_doc, res)
-        }
-    }
-
-    const onInputChanges = (id: number, name: string) => {
-        const current = game.filter((games) => games.id === id)
-        const res: Item = { ...current[0], userName: name }
-        if (infoGame && infoGame.id_doc) {
-            updateGame(infoGame.id_doc, res)
-        }
-
-        // if (typeof id === 'number') {
-        //   setFormValues((prevFormValues) => ({
-        //     ...prevFormValues,
-        //     [id as any]: {
-        //       ...prevFormValues[id as any],
-        //       point: Number(point) || 0,
-        //     },
-        //   }));
-        // }
+        updateGame(infoGame.id_doc, updatedPlayer)
     }
 
     return (
-        <form>
-            <Typography variant="caption"> table:{id}</Typography>
-            <FormGroup style={{ flexDirection: 'row' }}>
+        <StyledForm>
+            <StyledFormGroup>
                 <FormControlLabel
                     control={
                         <Checkbox
                             name="isShowRole"
-                            checked={checked['isShowRole']}
+                            checked={checked.isShowRole}
                             onChange={handleChangeRole}
+                            sx={{
+                                '&.Mui-checked': {
+                                    color: '#667eea',
+                                },
+                            }}
                         />
                     }
-                    label="Роли"
+                    label="Показать роли"
+                    sx={{
+                        '& .MuiFormControlLabel-label': {
+                            fontWeight: 500,
+                            fontSize: '14px',
+                            color: '#333',
+                        },
+                    }}
                 />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            name="isShowPoint"
-                            checked={checked['isShowPoint']}
-                            onChange={handleChangeRole}
-                        />
-                    }
-                    label="Очки"
-                />
-            </FormGroup>
-            <hr />
+            </StyledFormGroup>
+            <StyledDivider />
             {loading ? (
-                <CircularProgress />
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        padding: '40px',
+                    }}
+                >
+                    <CircularProgress />
+                </div>
             ) : (
-                game?.map((item: Item) => {
-                    return (
-                        <GameItem
-                            key={item.id}
-                            isShowRole={checked.isShowRole}
-                            isShowPoint={checked.isShowPoint}
-                            item={item}
-                            cbSelect={handleChange}
-                            changeValue={(name) =>
-                                onInputChanges(item.id, name)
-                            }
-                        />
-                    )
-                })
+                game.map((item: Item) => (
+                    <GameItem
+                        key={item.id}
+                        isShowRole={checked.isShowRole}
+                        item={item}
+                        cbSelect={handleRoleChange}
+                        changeValue={(name) =>
+                            handleInputChange(item.id, name)
+                        }
+                    />
+                ))
             )}
-            <hr />
+            <StyledDivider />
 
-            {!checked.isShowRole ? null : (
-                <div className="result-game">
-                    <span>Победа &nbsp;</span>
-                    <select
+            {checked.isShowRole && (
+                <StyledResultGame>
+                    <span style={{ fontWeight: 600, color: '#333' }}>
+                        Победа:
+                    </span>
+                    <StyledResultSelect
                         value={resultMatch}
                         onChange={(e) =>
-                            setResultMatch(e.target.value)
+                            setResultMatch(
+                                e.target.value as ResultMatch
+                            )
                         }
                     >
-                        <option value="none">none</option>
-                        <option value="red">Red</option>
-                        <option value="mafia">Mafia</option>
-                    </select>
-                </div>
+                        <option value="none">Не выбрано</option>
+                        <option value="red">Красные</option>
+                        <option value="mafia">Мафия</option>
+                    </StyledResultSelect>
+                </StyledResultGame>
             )}
 
-            <textarea
-                placeholder="Комментарий к игре"
+            <StyledTextarea
+                placeholder="Комментарий к игре..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
-            ></textarea>
-            <hr />
-            <Button variant="contained" onClick={message}>
+            />
+            <StyledDivider />
+            <StyledSubmitButton
+                variant="contained"
+                onClick={sendMessage}
+            >
                 отправить в телегу
-            </Button>
-            {/* <Button variant="contained" onClick={handleClick}>сохранить</Button> */}
-            {/* <h2>{JSON.stringify(formValues)}</h2> */}
-        </form>
-    )
-}
-
-export const GameItem = ({
-    isShowRole,
-    isShowPoint,
-    item,
-    cbSelect,
-    changeValue,
-}: {
-    item: Item
-    isShowRole: boolean
-    isShowPoint: boolean
-    cbSelect: (id: number, role: Role) => void
-    changeValue: (value: string) => void
-}) => {
-    const [isDisabled, setDisabled] = useState<boolean>(true)
-    const [value, setValue] = useState<string>()
-
-    const handle = (e: any) => {
-        e.preventDefault()
-
-        if (isDisabled) {
-            setDisabled(false)
-        } else {
-            setDisabled(true)
-            changeValue(value || '')
-        }
-    }
-
-    useEffect(() => {
-        setValue(item.userName)
-    }, [item.userName])
-
-    return (
-        <div style={{ display: 'flex', marginBottom: 5 }}>
-            <label style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ width: '20px' }}>{item.id}</span>
-                <input
-                    style={{ margin: '0 5px' }}
-                    onChange={(e) => setValue(e.target.value)}
-                    disabled={isDisabled}
-                    value={value}
-                ></input>
-                <button onClick={(e) => handle(e)}>
-                    {isDisabled ? 'Edit' : 'Save'}
-                </button>
-            </label>
-
-            {isShowRole && (
-                <Select
-                    role={item.role}
-                    cb={(role) => cbSelect(item.id, role)}
-                />
-            )}
-
-            {/* {isShowPoint && <input type="number" step={0.1} style={{ width: '50px' }} value={item.point} onChange={(e) => onInputChanges(item.id, e.target.value)} />} */}
-        </div>
+            </StyledSubmitButton>
+        </StyledForm>
     )
 }
