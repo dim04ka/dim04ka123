@@ -1,50 +1,77 @@
-import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { ChangeEvent, FormEvent, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-import { Button, Input, Space } from 'antd';
+import { Button, Input } from 'antd'
 
-import { CLUB, CLUB_LEO_KING, CLUB_OLE_FLOW, IS_AUTHENTICATED } from '../../consts';
+import {
+    CLUB,
+    CLUB_LEO_KING,
+    CLUB_OLE_FLOW,
+    IS_AUTHENTICATED,
+} from '@/shared/consts'
 
-const Login = () => {
-  const [value, setValue] = useState('');
-  const navigate = useNavigate();
+import {
+    StyledButtonContainer,
+    StyledError,
+    StyledForm,
+    StyledFormContainer,
+    StyledInputContainer,
+} from './styles'
 
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [isError, setError] = useState(false);
+export const Login = () => {
+    const [value, setValue] = useState('')
+    const navigate = useNavigate()
 
-  const handleEnter = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    setError(false);
-    if (value) {
-      if (value === CLUB_LEO_KING || value === CLUB_OLE_FLOW) {
-        localStorage.setItem(IS_AUTHENTICATED, 'true');
-        localStorage.setItem(CLUB, value);
-        navigate('/random-chair');
-        window.location.reload();
-      }
-    } else {
-      setError(true);
+    const [isError, setError] = useState(false)
+
+    const handleEnter = (event: FormEvent<HTMLFormElement>): void => {
+        event.preventDefault()
+        setError(false)
+        if (value) {
+            if (value === CLUB_LEO_KING || value === CLUB_OLE_FLOW) {
+                localStorage.setItem(IS_AUTHENTICATED, 'true')
+                localStorage.setItem(CLUB, value)
+                navigate('/games')
+            } else {
+                setError(true)
+            }
+        } else {
+            setError(true)
+        }
     }
-  };
-  return (
-    <>
-      <form onSubmit={handleEnter} style={{ marginTop: 50, padding: '0px 20px' }}>
-        <Space direction="vertical">
-          <Space direction="horizontal">
-            <Input.Password
-              name="password"
-              placeholder="input password"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              visibilityToggle={{ visible: passwordVisible, onVisibleChange: setPasswordVisible }}
-            />
-            <Button htmlType="submit">Enter</Button>
-          </Space>
-        </Space>
-        {isError ? <div style={{ color: 'red' }}>error</div> : null}
-      </form>
-    </>
-  );
-};
 
-export default Login;
+    const handleChangePassword = (
+        event: ChangeEvent<HTMLInputElement>
+    ) => {
+        setError(false)
+        setValue(event.target.value)
+    }
+    return (
+        <StyledForm onSubmit={handleEnter}>
+            <StyledFormContainer>
+                <StyledInputContainer>
+                    <Input.Password
+                        name="password"
+                        placeholder="Введите пароль"
+                        value={value}
+                        onChange={handleChangePassword}
+                        size="large"
+                    />
+                </StyledInputContainer>
+                <StyledButtonContainer>
+                    <Button
+                        htmlType="submit"
+                        type="primary"
+                        size="large"
+                        block
+                    >
+                        Войти
+                    </Button>
+                </StyledButtonContainer>
+                <StyledError $isVisible={isError}>
+                    Неверный пароль
+                </StyledError>
+            </StyledFormContainer>
+        </StyledForm>
+    )
+}

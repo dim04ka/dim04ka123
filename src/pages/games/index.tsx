@@ -1,55 +1,94 @@
-import { Link } from 'react-router-dom';
+import { useMemo } from 'react'
 
-import { Typography } from '@mui/material';
-import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Box } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 
-import { useGames } from '../../hooks/useGames';
-import { IInfoGame } from '../../interface';
-import './style.scss';
+import { useGames } from '@/hooks/useGames'
+import { IInfoGame } from '@/shared/domain/interface'
 
-const Games = () => {
-  const { games, loading, deleteGame } = useGames();
-  // const sortedItems = games.sort((a, b) => {
-  //     return Date.parse(a.date) - Date.parse(b.date);
-  // });
-  const sortedItems = games.sort((b, a) => {
-    const [hoursA, minutesA] = a.date.split(':').map(Number);
-    const [hoursB, minutesB] = b.date.split(':').map(Number);
+import {
+    StyledDeleteButton,
+    StyledEmptyMessage,
+    StyledGameCard,
+    StyledGameDetails,
+    StyledGameInfo,
+    StyledGameLink,
+    StyledGameNumber,
+    StyledGameRole,
+    StyledGameTime,
+    StyledGamesContainer,
+    StyledLoadingContainer,
+    StyledTitle,
+} from './styles'
 
-    return hoursA - hoursB || minutesA - minutesB;
-  });
-  return (
-    <>
-      <h1>Игры вечера</h1>
-      {games.length === 0 ? <div>Нет начавшихся игр</div> : null}
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        sortedItems.map((item: IInfoGame) => {
-          return (
-            <div key={item.id} className="game">
-              <Link to={`${item.id}`} style={{ textDecoration: 'none' }}>
-                <div>
-                  <Typography variant="button">Игра № {item.numberGame} </Typography>
-                </div>
-                <Typography variant="body2">{item.date} </Typography>
+export const Games = () => {
+    const { games, loading, deleteGame } = useGames()
 
-                <Typography variant="body2">
-                  <span>{item.role}</span>
-                  <span> </span>
-                  <span>{item.judge}</span>
-                </Typography>
-              </Link>
-              <Button variant="contained" onClick={() => deleteGame(item.id_doc!)}>
-                Удалить
-              </Button>
-            </div>
-          );
+    const sortedItems = useMemo(() => {
+        return [...games].sort((a, b) => {
+            const [hoursA, minutesA] = a.date.split(':').map(Number)
+            const [hoursB, minutesB] = b.date.split(':').map(Number)
+
+            return hoursA - hoursB || minutesA - minutesB
         })
-      )}
-    </>
-  );
-};
+    }, [games])
 
-export default Games;
+    return (
+        <StyledGamesContainer>
+            <StyledTitle>Игры вечера</StyledTitle>
+            {loading ? (
+                <StyledLoadingContainer>
+                    <CircularProgress />
+                </StyledLoadingContainer>
+            ) : sortedItems.length === 0 ? (
+                <StyledEmptyMessage>
+                    Нет начавшихся игр
+                </StyledEmptyMessage>
+            ) : (
+                sortedItems.map((item: IInfoGame) => (
+                    <StyledGameCard key={item.id}>
+                        <StyledGameLink to={`${item.id}`}>
+                            <StyledGameInfo>
+                                <StyledGameNumber>
+                                    Игра № {item.numberGame}
+                                </StyledGameNumber>
+                                <Box
+                                    display="flex"
+                                    justifyContent="space-between"
+                                >
+                                    <Box>
+                                        <StyledGameTime>
+                                            <i className="fa fa-clock-o" />
+                                            {item.date}
+                                        </StyledGameTime>
+                                        <StyledGameDetails>
+                                            <StyledGameRole>
+                                                {item.role}{' '}
+                                                {item.judge}
+                                            </StyledGameRole>
+                                        </StyledGameDetails>
+                                    </Box>
+
+                                    <Box>
+                                        <StyledDeleteButton
+                                            variant="contained"
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                deleteGame(
+                                                    item.id_doc!
+                                                )
+                                            }}
+                                        >
+                                            <i className="fa fa-trash" />
+                                            Удалить
+                                        </StyledDeleteButton>
+                                    </Box>
+                                </Box>
+                            </StyledGameInfo>
+                        </StyledGameLink>
+                    </StyledGameCard>
+                ))
+            )}
+        </StyledGamesContainer>
+    )
+}
