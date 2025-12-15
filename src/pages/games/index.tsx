@@ -61,38 +61,29 @@ export const Games = () => {
                                 <StyledGameNumber>
                                     Игра № {item.numberGame}
                                 </StyledGameNumber>
-                                <Box
-                                    display="flex"
-                                    justifyContent="space-between"
-                                    alignItems="end"
-                                >
-                                    <Box>
-                                        <StyledGameTime>
-                                            <i className="fa fa-clock-o" />
-                                            {formatTime(item.date)} |{' '}
-                                            {formatDate(item.id)}
-                                        </StyledGameTime>
-                                        <StyledGameDetails>
-                                            <StyledGameRole>
-                                                {item.role}{' '}
-                                                {item.judge}
-                                            </StyledGameRole>
-                                        </StyledGameDetails>
-                                    </Box>
-
-                                    <StyledDeleteButton
-                                        variant="contained"
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            deleteGame(item.id_doc!)
-                                        }}
-                                    >
-                                        <i className="fa fa-trash" />
-                                        Удалить
-                                    </StyledDeleteButton>
+                                <Box>
+                                    <StyledGameTime>
+                                        <i className="fa fa-clock-o" />
+                                        {formatTime(item.date)} |{' '}
+                                        {formatDate(item.id)}
+                                    </StyledGameTime>
+                                    <StyledGameDetails>
+                                        <StyledGameRole>
+                                            {item.role} {item.judge}
+                                        </StyledGameRole>
+                                    </StyledGameDetails>
                                 </Box>
                             </StyledGameInfo>
                         </StyledGameLink>
+                        <StyledDeleteButton
+                            variant="contained"
+                            onClick={() => {
+                                deleteGame(item.id_doc!)
+                            }}
+                        >
+                            <i className="fa fa-trash" />
+                            Удалить
+                        </StyledDeleteButton>
                     </StyledGameCard>
                 ))
             )}

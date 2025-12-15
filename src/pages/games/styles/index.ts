@@ -42,7 +42,6 @@ export const StyledGameCard = styled.div`
     gap: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
-    cursor: pointer;
 
     &:hover {
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -58,6 +57,7 @@ export const StyledGameLink = styled(Link)`
     flex-direction: column;
     gap: 12px;
     color: inherit;
+    cursor: pointer;
 `
 
 export const StyledGameInfo = styled.div`

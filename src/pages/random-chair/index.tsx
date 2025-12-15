@@ -215,11 +215,35 @@ export const RandomChair = () => {
         setItems(result)
         localStorage.setItem('items', JSON.stringify(result))
     }
+
+    const handleReorder = (fromIndex: number, toIndex: number) => {
+        const newItems = [...items]
+        const fromUserName = newItems[fromIndex].userName
+        const toUserName = newItems[toIndex].userName
+
+        newItems[fromIndex] = {
+            ...newItems[fromIndex],
+            userName: toUserName,
+        }
+        newItems[toIndex] = {
+            ...newItems[toIndex],
+            userName: fromUserName,
+        }
+
+        setItems(newItems)
+        localStorage.setItem('items', JSON.stringify(newItems))
+    }
     return (
         <StyledContainer>
             <StyledHeader>
                 <StyledListWrapper>
-                    <List items={items} cb={cb} edit={edit} />
+                    <List
+                        items={items}
+                        cb={cb}
+                        edit={edit}
+                        onReorder={handleReorder}
+                        $isAllFilled={numbers.length === 10}
+                    />
                 </StyledListWrapper>
 
                 <StyledForm>
