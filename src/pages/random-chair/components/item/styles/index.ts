@@ -5,6 +5,7 @@ export const StyledItem = styled.div<{
     $isEditing: boolean
     $isDragging: boolean
     $isDragOver: boolean
+    $translateY?: number
 }>`
     display: flex;
     align-items: center;
@@ -35,10 +36,19 @@ export const StyledItem = styled.div<{
               : $isDragOver
                 ? '0 0 10px rgba(74, 144, 226, 0.5)'
                 : 'none'};
-    opacity: ${({ $isDragging }) => ($isDragging ? 0.5 : 1)};
-    transform: ${({ $isDragging }) =>
-        $isDragging ? 'scale(0.95)' : 'scale(1)'};
+    opacity: ${({ $isDragging }) => ($isDragging ? 0.7 : 1)};
+    transform: ${({ $isDragging, $translateY }) =>
+        $isDragging && $translateY !== undefined && $translateY !== 0
+            ? `translateY(${$translateY}px) scale(1.05)`
+            : $isDragging
+              ? 'scale(0.95)'
+              : 'scale(1)'};
     touch-action: pan-y;
+    z-index: ${({ $isDragging }) => ($isDragging ? 1000 : 1)};
+    position: ${({ $isDragging, $translateY }) =>
+        $isDragging && $translateY !== undefined && $translateY !== 0
+            ? 'relative'
+            : 'static'};
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     user-select: none;

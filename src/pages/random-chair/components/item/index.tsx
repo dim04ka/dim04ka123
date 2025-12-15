@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 
@@ -22,6 +22,8 @@ export const ItemComponent = ({
     onDragEnd,
     $isDragOver,
     $isAllFilled,
+    $touchY,
+    $touchStartY,
 }: {
     cb: (item: Item) => void
     edit: Item | null
@@ -31,8 +33,12 @@ export const ItemComponent = ({
     onDragEnd: () => void
     $isDragOver?: boolean
     $isAllFilled: boolean
+    $touchY?: number | null
+    $touchStartY?: number | null
 }) => {
     const [isDragging, setIsDragging] = useState(false)
+    const [translateY, setTranslateY] = useState(0)
+    const itemRef = React.useRef<HTMLDivElement>(null)
 
     const handleEditClick = () => {
         cb(item)
@@ -54,14 +60,37 @@ export const ItemComponent = ({
         onDragEnd()
     }
 
+    useEffect(() => {
+        if (
+            $touchY != null &&
+            $touchStartY != null &&
+            typeof $touchY === 'number' &&
+            typeof $touchStartY === 'number'
+        ) {
+            const offsetY = $touchY - $touchStartY
+            setTranslateY(offsetY)
+            setIsDragging(true)
+        } else {
+            setTranslateY(0)
+            setIsDragging(false)
+        }
+    }, [$touchY, $touchStartY])
+
     const $isEditing = edit?.id === item.id
+    const $isTouchDragging =
+        $touchY != null &&
+        $touchStartY != null &&
+        typeof $touchY === 'number' &&
+        typeof $touchStartY === 'number'
 
     return (
         <StyledItem
+            ref={itemRef}
             $isActive={item.isBooked}
             $isEditing={$isEditing}
-            $isDragging={isDragging}
+            $isDragging={isDragging || $isTouchDragging}
             $isDragOver={$isDragOver || false}
+            $translateY={$isTouchDragging ? translateY : 0}
             draggable={$isAllFilled}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}

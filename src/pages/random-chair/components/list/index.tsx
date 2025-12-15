@@ -24,8 +24,10 @@ export const List = ({
     const [dragOverIndex, setDragOverIndex] = useState<number | null>(
         null
     )
+    const [touchY, setTouchY] = useState<number | null>(null)
     const touchStartY = useRef<number | null>(null)
     const touchStartIndex = useRef<number | null>(null)
+    const itemRefs = useRef<(HTMLDivElement | null)[]>([])
 
     const callback = (item: Item) => cb(item)
 
@@ -69,6 +71,7 @@ export const List = ({
         touchStartY.current = e.touches[0].clientY
         touchStartIndex.current = index
         setDraggedIndex(index)
+        setTouchY(e.touches[0].clientY)
     }
 
     useEffect(() => {
@@ -81,7 +84,8 @@ export const List = ({
                 return
 
             e.preventDefault()
-            const touchY = e.touches[0].clientY
+            const currentTouchY = e.touches[0].clientY
+            setTouchY(currentTouchY)
 
             const allItems = document.querySelectorAll(
                 '[data-item-index]'
@@ -95,8 +99,8 @@ export const List = ({
                 )
 
                 if (
-                    touchY >= rect.top &&
-                    touchY <= rect.bottom &&
+                    currentTouchY >= rect.top &&
+                    currentTouchY <= rect.bottom &&
                     idx !== touchStartIndex.current
                 ) {
                     targetIndex = idx
@@ -127,6 +131,7 @@ export const List = ({
             touchStartIndex.current = null
             setDraggedIndex(null)
             setDragOverIndex(null)
+            setTouchY(null)
         }
 
         if (draggedIndex !== null) {
@@ -156,6 +161,9 @@ export const List = ({
                 <StyledListItemWrapper
                     key={item.id}
                     data-item-index={index}
+                    ref={(el) => {
+                        itemRefs.current[index] = el
+                    }}
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDragLeave={handleDragLeave}
                     onDrop={(e) => handleDrop(e, index)}
@@ -170,6 +178,17 @@ export const List = ({
                         onDragEnd={handleDragEnd}
                         $isDragOver={dragOverIndex === index}
                         $isAllFilled={$isAllFilled}
+                        $touchY={
+                            draggedIndex === index && touchY !== null
+                                ? touchY
+                                : null
+                        }
+                        $touchStartY={
+                            draggedIndex === index &&
+                            touchStartY.current !== null
+                                ? touchStartY.current
+                                : null
+                        }
                     />
                 </StyledListItemWrapper>
             ))}
