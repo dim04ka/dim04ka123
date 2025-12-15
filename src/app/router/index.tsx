@@ -1,15 +1,19 @@
 import {
-    BrowserRouter,
     Route,
     RouterProvider,
-    Routes,
     createBrowserRouter,
     createRoutesFromElements,
 } from 'react-router-dom'
 
-import { Games, Login, NoPage, RolePage, Settings } from '@/pages'
+import {
+    Games,
+    Login,
+    NoPage,
+    RandomChair,
+    RolePage,
+    Settings,
+} from '@/pages'
 import Players from '@/pages/players'
-import RandomChair from '@/pages/randomChair'
 import { Layout } from '@/shared/components'
 
 export const AppRouter = () => {

@@ -8,19 +8,10 @@ import Button from '@mui/material/Button'
 export const StyledGamesContainer = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
+    gap: 10px;
     padding-bottom: 40px;
     max-width: 1200px;
     margin: 0 auto;
-`
-
-export const StyledTitle = styled.h1`
-    margin: 0 0 8px 0;
-    font-size: 32px;
-    font-weight: 700;
-    color: #1a1a1a;
-    letter-spacing: -0.5px;
 `
 
 export const StyledEmptyMessage = styled.div`
@@ -41,7 +32,7 @@ export const StyledLoadingContainer = styled.div`
 `
 
 export const StyledGameCard = styled.div`
-    padding: 20px 24px;
+    padding: 10px 12px;
     background: #ffffff;
     border: 1px solid #e0e0e0;
     border-radius: 12px;
@@ -87,12 +78,11 @@ export const StyledGameDetails = styled.div`
 
 export const StyledDeleteButton = styled(Button)`
     && {
-        min-width: 120px;
         background-color: #dc3545;
         color: white;
         text-transform: none;
         font-weight: 500;
-        padding: 10px 20px;
+        padding: 10px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
         transition: all 0.2s ease;

@@ -1,12 +1,15 @@
-import ItemComponent from '../components/Item'
-import { Item } from './domain/interface'
+import { Item } from '@/shared/domain/interface'
+
+import { ItemComponent } from '../item'
 
 export const List = ({
     items,
     cb,
+    edit,
 }: {
     items: Item[]
     cb: (item: Item) => void
+    edit: Item | null
 }) => {
     const callback = (item: Item) => cb(item)
 
@@ -15,6 +18,7 @@ export const List = ({
             {items.map((item) => (
                 <ItemComponent
                     cb={callback}
+                    edit={edit}
                     item={item}
                     key={item.id}
                 />
@@ -22,5 +26,3 @@ export const List = ({
         </>
     )
 }
-
-export default List

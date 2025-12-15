@@ -18,24 +18,33 @@ import {
     StyledGameTime,
     StyledGamesContainer,
     StyledLoadingContainer,
-    StyledTitle,
 } from './styles'
+
+const formatTime = (timeString: string): string => {
+    const [hours, minutes] = timeString.split(':').map(Number)
+    const formattedHours = hours.toString().padStart(2, '0')
+    const formattedMinutes = minutes.toString().padStart(2, '0')
+    return `${formattedHours}:${formattedMinutes}`
+}
+
+const formatDate = (timestamp: string): string => {
+    const date = new Date(Number(timestamp))
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    return `${day}.${month}`
+}
 
 export const Games = () => {
     const { games, loading, deleteGame } = useGames()
 
     const sortedItems = useMemo(() => {
         return [...games].sort((a, b) => {
-            const [hoursA, minutesA] = a.date.split(':').map(Number)
-            const [hoursB, minutesB] = b.date.split(':').map(Number)
-
-            return hoursA - hoursB || minutesA - minutesB
+            return Number(b.id) - Number(a.id)
         })
     }, [games])
 
     return (
         <StyledGamesContainer>
-            <StyledTitle>Игры вечера</StyledTitle>
             {loading ? (
                 <StyledLoadingContainer>
                     <CircularProgress />
@@ -55,11 +64,13 @@ export const Games = () => {
                                 <Box
                                     display="flex"
                                     justifyContent="space-between"
+                                    alignItems="end"
                                 >
                                     <Box>
                                         <StyledGameTime>
                                             <i className="fa fa-clock-o" />
-                                            {item.date}
+                                            {formatTime(item.date)} |{' '}
+                                            {formatDate(item.id)}
                                         </StyledGameTime>
                                         <StyledGameDetails>
                                             <StyledGameRole>
@@ -69,20 +80,16 @@ export const Games = () => {
                                         </StyledGameDetails>
                                     </Box>
 
-                                    <Box>
-                                        <StyledDeleteButton
-                                            variant="contained"
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                deleteGame(
-                                                    item.id_doc!
-                                                )
-                                            }}
-                                        >
-                                            <i className="fa fa-trash" />
-                                            Удалить
-                                        </StyledDeleteButton>
-                                    </Box>
+                                    <StyledDeleteButton
+                                        variant="contained"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            deleteGame(item.id_doc!)
+                                        }}
+                                    >
+                                        <i className="fa fa-trash" />
+                                        Удалить
+                                    </StyledDeleteButton>
                                 </Box>
                             </StyledGameInfo>
                         </StyledGameLink>
