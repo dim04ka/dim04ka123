@@ -1,15 +1,16 @@
-import { Outlet } from "react-router-dom";
-import './style.scss'
-import Menu from '../Menu'
+import { Outlet } from 'react-router-dom';
+
+import Menu from '../Menu';
+import './style.scss';
 
 const Layout = () => {
   return (
     <div className="block">
-        {/*MAIN*/}
+      {/*MAIN*/}
       <Menu />
       <Outlet />
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

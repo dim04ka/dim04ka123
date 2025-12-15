@@ -7,38 +7,35 @@ export interface Item {
 }
 
 export interface IGame {
-  id: string
-  games: IInfoGame[]
+  id: string;
+  games: IInfoGame[];
 }
 
+export type Role = 'red' | 'mafia' | 'don' | 'sherif';
 
-export type Role = 'red' | 'mafia' | 'don' | 'sherif'
-
-export interface IFormValues {
-}
+export interface IFormValues {}
 export interface IProject {
-  comment: string
-  formValues: IFormValues
-  id: number
-  resultMatch: 'mafia' | 'red'
+  comment: string;
+  formValues: IFormValues;
+  id: number;
+  resultMatch: 'mafia' | 'red';
 }
 
 export interface IInfoGame {
-  date: string
-  id: string
-  id_doc?: string
-  judge: string
-  numberGame: string
-  playersWithRole: Item[]
-  role: string
-  status: string
-  club?: string
+  date: string;
+  id: string;
+  id_doc?: string;
+  judge: string;
+  numberGame: string;
+  playersWithRole: Item[];
+  role: string;
+  status: string;
+  club?: string;
 }
 
-
 export interface IPlayer {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 export interface INavigation {

@@ -1,4 +1,4 @@
 const Setting = () => {
-  return <div>setting</div>
-}
-export default Setting
+  return <div>setting</div>;
+};
+export default Setting;

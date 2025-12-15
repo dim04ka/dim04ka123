@@ -2,7 +2,6 @@
   text-align: center;
 }
 
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -19,7 +18,7 @@
   gap: 20px;
 }
 
-.wrapper{
+.wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
@@ -27,7 +26,7 @@
   justify-items: center;
 }
 
-.wrapper .item{
+.wrapper .item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,7 +37,7 @@
   border-radius: 10px;
   background-color: #6c6b6b;
 }
-.wrapper .item.active{
+.wrapper .item.active {
   display: flex;
   background-color: rgb(153, 47, 47);
 }
@@ -47,14 +46,13 @@
   flex-direction: column;
   gap: 10px;
   align-items: center;
-
 }
-.button__random{
+.button__random {
   width: 120px;
   height: 50px;
   font-size: 26px;
 }
-.button__clean{
+.button__clean {
   width: 70px;
   height: 70px;
   font-size: 26px;
@@ -64,7 +62,7 @@
   font-size: 28px;
 }
 
-.input{
+.input {
   display: flex;
   flex-direction: column;
   margin-bottom: 10px;
@@ -74,8 +72,7 @@
   margin-bottom: 5px;
 }
 
-
-.button__submit{
+.button__submit {
   width: 70px;
   height: 70px;
   font-size: 40px;

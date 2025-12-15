@@ -1,22 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from './components/Layout'
-import Setting from './pages/setting'
-import NoPage from './pages/noPage';
-import Games from './pages/games'
-import RandomChair from './pages/randomChair'
-import Stats from './pages/stats'
-import Role from './pages/role'
-import PrivateRoute from './components/PrivateRoute'
-import Login from './pages/Login'
-import Players from './pages/players';
-import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+import './App.css';
+import Layout from './components/Layout';
+import PrivateRoute from './components/PrivateRoute';
+import './index.css';
+import Login from './pages/Login';
+import Games from './pages/games';
+import NoPage from './pages/noPage';
+import Players from './pages/players';
+import RandomChair from './pages/randomChair';
+import Role from './pages/role';
+import Setting from './pages/setting';
+import Stats from './pages/stats';
+
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
@@ -34,6 +33,5 @@ root.render(
         </Route>
       </Routes>
     </BrowserRouter>
-
   </React.StrictMode>
 );

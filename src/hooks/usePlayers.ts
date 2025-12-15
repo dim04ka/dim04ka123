@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
-import { IPlayer } from "../interface";
+import { useEffect, useState } from 'react';
 
-const initial: IPlayer[] = [{ id: '1', name: "Dzmitry" }, { id: '2', name: "Oleg" }]
+import { IPlayer } from '../interface';
+
+const initial: IPlayer[] = [
+  { id: '1', name: 'Dzmitry' },
+  { id: '2', name: 'Oleg' },
+];
 
 const usePlayers = (): [IPlayer[], (player: IPlayer) => void, (id: string) => void] => {
-
-
   const [players, setPlayers] = useState<IPlayer[]>([]);
 
   const addPlayer = (player: IPlayer) => {
@@ -13,14 +15,14 @@ const usePlayers = (): [IPlayer[], (player: IPlayer) => void, (id: string) => vo
   };
 
   const removePlayer = (id: string) => {
-    setPlayers(players.filter(p => p.id !== id))
-  }
+    setPlayers(players.filter((p) => p.id !== id));
+  };
 
   useEffect(() => {
-    setPlayers(initial)
-  }, [])
+    setPlayers(initial);
+  }, []);
 
-  return [players, addPlayer, removePlayer]
-}
+  return [players, addPlayer, removePlayer];
+};
 
-export default usePlayers
+export default usePlayers;

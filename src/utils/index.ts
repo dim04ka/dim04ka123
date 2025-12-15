@@ -1,28 +1,27 @@
-import { useState } from 'react'
-import { Role, Item } from '../interface'
+import { useState } from 'react';
+
+import { Item, Role } from '../interface';
 
 export const useRole = () => {
-  const [role, setRole] = useState<string>('guest')
+  const [role, setRole] = useState<string>('guest');
 
   const getRole = () => {
-    return role
-  }
+    return role;
+  };
 
-  return [getRole]
-}
-
+  return [getRole];
+};
 
 export const transformText = (name: string) => {
   return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-}
-
+};
 
 export const getIcon = (role: Role) => {
   if (role === 'don') return '🎩';
-  if (role === 'sherif') return '👮'
-  if (role === 'mafia') return '👎🏾'
-  return ''
-}
+  if (role === 'sherif') return '👮';
+  if (role === 'mafia') return '👎🏾';
+  return '';
+};
 
 // export const isWinMatch = (role: Role, resultMatch: 'mafia' | 'red' | 'none') => {
 //   if (role === 'mafia' || role === 'don') {
@@ -40,8 +39,7 @@ export const shuffle = (array: Item[]) => {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
-}
-
+};
 
 export const getDate = () => {
   const date = new Date();
@@ -53,4 +51,4 @@ export const getDate = () => {
   const formattedMonth = month < 10 ? `0${month}` : month;
 
   return `${formattedDay}.${formattedMonth}.${year}`;
-}
+};
