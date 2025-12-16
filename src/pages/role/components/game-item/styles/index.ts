@@ -1,6 +1,11 @@
 import styled from 'styled-components'
 
-export const StyledGameItem = styled.div`
+type StyledGameItemProps = {
+    $isDragging?: boolean
+    $isDragOver?: boolean
+}
+
+export const StyledGameItem = styled.div<StyledGameItemProps>`
     display: flex;
     align-items: center;
     gap: 5px;
@@ -11,10 +16,33 @@ export const StyledGameItem = styled.div`
     flex-wrap: wrap;
     flex-direction: column;
     align-items: stretch;
+    cursor: grab;
+    padding: 8px;
+    margin-bottom: 8px;
+
+    ${({ $isDragging }) =>
+        $isDragging &&
+        `
+        opacity: 0.5;
+        cursor: grabbing;
+        transform: scale(0.95);
+    `}
+
+    ${({ $isDragOver }) =>
+        $isDragOver &&
+        `
+        border-color: #667eea;
+        background: #e8ebff;
+        transform: scale(1.02);
+    `}
 
     &:hover {
         background: #f0f2f5;
         border-color: #e0e0e0;
+    }
+
+    &:active {
+        cursor: grabbing;
     }
 
     &:last-child {

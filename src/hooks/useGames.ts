@@ -19,6 +19,7 @@ export const useGames = (): {
     deleteGame: (id: string) => void
     addGame: (game: IInfoGame) => void
     updateGame: (id: string, item: Item) => void
+    updateMultipleItems: (id: string, items: Item[]) => void
 } => {
     const [games, setGames] = useState<IInfoGame[]>([])
     const [loading, setLoading] = useState<boolean>(false)
@@ -100,11 +101,46 @@ export const useGames = (): {
         }
     }
 
+    const updateMultipleItems = async (id: string, items: Item[]) => {
+        try {
+            setLoading(true)
+            const game = games.filter((game) => game.id_doc === id)[0]
+            const itemsMap = new Map(
+                items.map((item) => [item.id, item])
+            )
+            const updatedGame = {
+                ...game,
+                playersWithRole: game.playersWithRole.map(
+                    (player: Item) => {
+                        const updatedItem = itemsMap.get(player.id)
+                        return updatedItem || player
+                    }
+                ),
+            }
+            const taskDocRef = doc(db, GAMES, id)
+            await updateDoc(taskDocRef, {
+                ...updatedGame,
+            })
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setLoading(false)
+            loadGames()
+        }
+    }
+
     useEffect(() => {
         loadGames()
     }, [])
 
-    return { games, loading, deleteGame, addGame, updateGame }
+    return {
+        games,
+        loading,
+        deleteGame,
+        addGame,
+        updateGame,
+        updateMultipleItems,
+    }
 }
 
 export default useGames

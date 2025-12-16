@@ -28,7 +28,8 @@ type ResultMatch = 'none' | 'red' | 'mafia'
 export const RolePage = () => {
     const { id } = useParams<{ id: string }>()
 
-    const { games, updateGame, loading } = useGames()
+    const { games, updateGame, updateMultipleItems, loading } =
+        useGames()
     const [game, setGame] = useState<Item[]>([])
     const [infoGame, setInfoGame] = useState<IInfoGame>()
     const [formValues, setFormValues] = useState<
@@ -40,6 +41,8 @@ export const RolePage = () => {
     const [checked, setChecked] = useState<CheckedState>({
         isShowRole: false,
     })
+    const [draggedId, setDraggedId] = useState<number | null>(null)
+    const [dragOverId, setDragOverId] = useState<number | null>(null)
 
     const { sendMessage } = useTelegramMessage({
         formValues,
@@ -102,6 +105,71 @@ export const RolePage = () => {
         updateGame(infoGame.id_doc, updatedPlayer)
     }
 
+    const handleDragStart = (id: number) => {
+        setDraggedId(id)
+    }
+
+    const handleDragOver = (e: React.DragEvent, id: number) => {
+        e.preventDefault()
+        if (draggedId !== id) {
+            setDragOverId(id)
+        }
+    }
+
+    const handleDragLeave = () => {
+        setDragOverId(null)
+    }
+
+    const handleDrop = (targetId: number) => {
+        if (
+            !draggedId ||
+            draggedId === targetId ||
+            !infoGame?.id_doc
+        ) {
+            setDraggedId(null)
+            setDragOverId(null)
+            return
+        }
+
+        const draggedItem = game.find(
+            (player) => player.id === draggedId
+        )
+        const targetItem = game.find(
+            (player) => player.id === targetId
+        )
+
+        if (!draggedItem || !targetItem) {
+            setDraggedId(null)
+            setDragOverId(null)
+            return
+        }
+
+        const updatedDraggedItem: Item = {
+            ...draggedItem,
+            userName: targetItem.userName,
+            role: targetItem.role,
+        }
+
+        const updatedTargetItem: Item = {
+            ...targetItem,
+            userName: draggedItem.userName,
+            role: draggedItem.role,
+        }
+
+        updateMultipleItems(infoGame.id_doc, [
+            updatedDraggedItem,
+            updatedTargetItem,
+        ])
+
+        setDraggedId(null)
+        setDragOverId(null)
+    }
+
+    const handleDragEnd = () => {
+        setDraggedId(null)
+        setDragOverId(null)
+    }
+
     return (
         <StyledForm>
             <StyledFormGroup>
@@ -149,6 +217,13 @@ export const RolePage = () => {
                         changeValue={(name) =>
                             handleInputChange(item.id, name)
                         }
+                        onDragStart={handleDragStart}
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        onDragEnd={handleDragEnd}
+                        isDragging={draggedId === item.id}
+                        isDragOver={dragOverId === item.id}
                     />
                 ))
             )}
