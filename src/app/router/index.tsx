@@ -13,7 +13,6 @@ import {
     RolePage,
     Settings,
 } from '@/pages'
-import Players from '@/pages/players'
 import { Layout } from '@/shared/components'
 
 export const AppRouter = () => {
@@ -27,7 +26,7 @@ export const AppRouter = () => {
                         path="random-chair"
                         element={<RandomChair />}
                     />
-                    <Route path="players" element={<Players />} />
+
                     <Route path="settings" element={<Settings />} />
                 </Route>
                 <Route path="login" element={<Login />} />
