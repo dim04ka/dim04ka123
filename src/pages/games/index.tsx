@@ -3,9 +3,8 @@ import { useMemo } from 'react'
 import { Box } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 
-import { useGames } from '@/hooks/useGames'
-import { IInfoGame } from '@/shared/domain/interface'
-
+import { useGames } from '../../hooks/useGames'
+import { IInfoGame } from '../../shared/domain/interface'
 import {
     StyledDeleteButton,
     StyledEmptyMessage,

@@ -5,9 +5,13 @@ import {
     CLUB_LEO_KING,
     CLUB_OLE_FLOW,
     token,
-} from '@/shared/consts'
-import { IInfoGame, Item } from '@/shared/domain/interface'
-import { getDate, getIcon, transformText } from '@/shared/utils'
+} from '../../../shared/consts'
+import { IInfoGame, Item } from '../../../shared/domain/interface'
+import {
+    getDate,
+    getIcon,
+    transformText,
+} from '../../../shared/utils'
 
 type CheckedState = {
     isShowRole: boolean

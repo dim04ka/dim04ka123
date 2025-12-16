@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 
-import { Item } from '@/shared/domain/interface'
-
+import { Item } from '../../../../shared/domain/interface'
 import {
     StyledDragIcon,
     StyledEditIcon,

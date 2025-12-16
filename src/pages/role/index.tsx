@@ -4,9 +4,8 @@ import { useParams } from 'react-router-dom'
 import { Checkbox, FormControlLabel, Typography } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 
-import useGames from '@/hooks/useGames'
-import { IInfoGame, Item, Role } from '@/shared/domain/interface'
-
+import useGames from '../../hooks/useGames'
+import { IInfoGame, Item, Role } from '../../shared/domain/interface'
 import { GameItem } from './components/game-item'
 import { useTelegramMessage } from './hooks/useTelegramMessage'
 import {

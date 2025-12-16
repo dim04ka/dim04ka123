@@ -2,8 +2,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Button } from 'antd'
 
-import { CLUB, IS_AUTHENTICATED } from '@/shared/consts'
-
+import { CLUB, IS_AUTHENTICATED } from '../../shared/consts'
 import {
     StyledButtonContainer,
     StyledContainer,

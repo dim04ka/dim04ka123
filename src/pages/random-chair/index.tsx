@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import useGames from '@/hooks/useGames'
-import { Item } from '@/shared/domain/interface'
-import { shuffle } from '@/shared/utils'
-
+import useGames from '../../hooks/useGames'
+import { Item } from '../../shared/domain/interface'
+import { shuffle } from '../../shared/utils'
 import { List } from './components'
 import {
     StyledCleanButton,

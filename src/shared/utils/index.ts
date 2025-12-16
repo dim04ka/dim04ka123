@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Item, Role } from '@/shared/domain/interface'
+import { Item, Role } from '../domain/interface'
 
 export const useRole = () => {
     const [role] = useState<string>('guest')

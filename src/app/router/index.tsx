@@ -12,8 +12,8 @@ import {
     RandomChair,
     RolePage,
     Settings,
-} from '@/pages'
-import { Layout } from '@/shared/components'
+} from '../../pages'
+import { Layout } from '../../shared/components'
 
 export const AppRouter = () => {
     const router = createBrowserRouter(

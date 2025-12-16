@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import Select from '@/components/Select'
-import { Item, Role } from '@/shared/domain/interface'
-
+import Select from '../../../../components/Select'
+import { Item, Role } from '../../../../shared/domain/interface'
 import {
     StyledEditButton,
     StyledGameItem,

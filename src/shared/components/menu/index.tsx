@@ -1,8 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 
-import { MENU } from '@/shared/consts'
-import { INavigation } from '@/shared/domain/interface'
-
+import { MENU } from '../../consts'
+import { INavigation } from '../../domain/interface'
 import {
     StyledMenu,
     StyledNavLink,

@@ -15,17 +15,7 @@
         "isolatedModules": true,
         "noEmit": true,
         "jsx": "react-jsx",
-        "baseUrl": "src",
-        "paths": {
-            "@/*": ["./*"],
-            "@app/*": ["app/*"],
-            "@components/*": ["components/*"],
-            "@pages/*": ["pages/*"],
-            "@hooks/*": ["hooks/*"],
-            "@utils/*": ["utils/*"],
-            "@consts/*": ["consts/*"],
-            "@firestore/*": ["firestore/*"]
-        }
+        "baseUrl": "src"
     },
     "include": ["src"]
 }

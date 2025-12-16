@@ -2,8 +2,7 @@ import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 
-import { IS_AUTHENTICATED } from '@/shared/consts'
-
+import { IS_AUTHENTICATED } from '../../consts'
 import { Menu } from '../menu'
 import { StyledLayout } from './styles'
 

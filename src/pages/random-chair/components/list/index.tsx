@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Item } from '@/shared/domain/interface'
-
+import { Item } from '../../../../shared/domain/interface'
 import { ItemComponent } from '../item'
 import { StyledListItemWrapper } from './styles'
 

@@ -8,8 +8,7 @@ import {
     CLUB_LEO_KING,
     CLUB_OLE_FLOW,
     IS_AUTHENTICATED,
-} from '@/shared/consts'
-
+} from '../../shared/consts'
 import {
     StyledButtonContainer,
     StyledError,
