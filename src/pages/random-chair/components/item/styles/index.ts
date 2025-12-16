@@ -22,8 +22,7 @@ export const StyledItem = styled.div<{
     border-radius: 10px;
     background-color: ${({ $isActive }) =>
         $isActive ? 'rgb(153, 47, 47)' : '#6c6b6b'};
-    cursor: ${({ $isActive, $isDragging }) =>
-        $isDragging ? 'grabbing' : $isActive ? 'grab' : 'default'};
+    cursor: default;
     transition: all 0.2s ease;
     gap: 12px;
     box-sizing: border-box;
@@ -59,7 +58,7 @@ export const StyledItem = styled.div<{
     }
 
     &:active {
-        cursor: grabbing;
+        cursor: default;
     }
 `
 

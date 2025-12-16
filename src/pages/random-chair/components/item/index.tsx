@@ -20,6 +20,7 @@ export const ItemComponent = ({
     index,
     onDragStart,
     onDragEnd,
+    onTouchStart,
     $isDragOver,
     $isAllFilled,
     $touchY,
@@ -31,6 +32,7 @@ export const ItemComponent = ({
     index: number
     onDragStart: (index: number) => void
     onDragEnd: () => void
+    onTouchStart: (e: React.TouchEvent) => void
     $isDragOver?: boolean
     $isAllFilled: boolean
     $touchY?: number | null
@@ -42,6 +44,15 @@ export const ItemComponent = ({
 
     const handleEditClick = () => {
         cb(item)
+    }
+
+    const handleItemTouchStart = (e: React.TouchEvent) => {
+        const target = e.target as HTMLElement
+        const dragIcon = target.closest('[data-drag-icon]')
+        if (!dragIcon && $isAllFilled) {
+            e.preventDefault()
+            e.stopPropagation()
+        }
     }
 
     const handleDragStart = (e: React.DragEvent) => {
@@ -58,6 +69,11 @@ export const ItemComponent = ({
     const handleDragEnd = () => {
         setIsDragging(false)
         onDragEnd()
+    }
+
+    const handleDragIconTouchStart = (e: React.TouchEvent) => {
+        e.stopPropagation()
+        onTouchStart(e)
     }
 
     useEffect(() => {
@@ -91,11 +107,16 @@ export const ItemComponent = ({
             $isDragging={isDragging || $isTouchDragging}
             $isDragOver={$isDragOver || false}
             $translateY={$isTouchDragging ? translateY : 0}
-            draggable={$isAllFilled}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
+            onTouchStart={handleItemTouchStart}
         >
-            <StyledDragIcon $isVisible={$isAllFilled}>
+            <StyledDragIcon
+                $isVisible={$isAllFilled}
+                draggable={$isAllFilled}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onTouchStart={handleDragIconTouchStart}
+                data-drag-icon
+            >
                 <DragIndicatorIcon />
             </StyledDragIcon>
             <StyledItemContent>

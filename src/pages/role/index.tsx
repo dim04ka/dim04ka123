@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { Checkbox, FormControlLabel, Typography } from '@mui/material'
@@ -43,6 +43,9 @@ export const RolePage = () => {
     })
     const [draggedId, setDraggedId] = useState<number | null>(null)
     const [dragOverId, setDragOverId] = useState<number | null>(null)
+    const [touchY, setTouchY] = useState<number | null>(null)
+    const touchStartY = useRef<number | null>(null)
+    const touchStartId = useRef<number | null>(null)
 
     const { sendMessage } = useTelegramMessage({
         formValues,
@@ -170,6 +173,86 @@ export const RolePage = () => {
         setDragOverId(null)
     }
 
+    const handleTouchStart = (e: React.TouchEvent, id: number) => {
+        e.preventDefault()
+        touchStartY.current = e.touches[0].clientY
+        touchStartId.current = id
+        setDraggedId(id)
+        setTouchY(e.touches[0].clientY)
+    }
+
+    useEffect(() => {
+        const handleTouchMove = (e: TouchEvent) => {
+            if (
+                touchStartId.current === null ||
+                touchStartY.current === null
+            )
+                return
+
+            e.preventDefault()
+            const currentTouchY = e.touches[0].clientY
+            setTouchY(currentTouchY)
+
+            const allItems =
+                document.querySelectorAll('[data-item-id]')
+            let targetId = touchStartId.current
+
+            allItems.forEach((itemElement) => {
+                const rect = itemElement.getBoundingClientRect()
+                const id = parseInt(
+                    itemElement.getAttribute('data-item-id') || '0'
+                )
+
+                if (
+                    currentTouchY >= rect.top &&
+                    currentTouchY <= rect.bottom &&
+                    id !== touchStartId.current
+                ) {
+                    targetId = id
+                }
+            })
+
+            if (targetId !== touchStartId.current) {
+                setDragOverId(targetId)
+            }
+        }
+
+        const handleTouchEnd = () => {
+            if (touchStartId.current === null || draggedId === null)
+                return
+
+            if (dragOverId !== null && draggedId !== dragOverId) {
+                handleDrop(dragOverId)
+            }
+
+            touchStartY.current = null
+            touchStartId.current = null
+            setDraggedId(null)
+            setDragOverId(null)
+            setTouchY(null)
+        }
+
+        if (draggedId !== null) {
+            document.addEventListener('touchmove', handleTouchMove, {
+                passive: false,
+            })
+            document.addEventListener('touchend', handleTouchEnd, {
+                passive: true,
+            })
+
+            return () => {
+                document.removeEventListener(
+                    'touchmove',
+                    handleTouchMove
+                )
+                document.removeEventListener(
+                    'touchend',
+                    handleTouchEnd
+                )
+            }
+        }
+    }, [draggedId, dragOverId, handleDrop])
+
     return (
         <StyledForm>
             <StyledFormGroup>
@@ -209,22 +292,38 @@ export const RolePage = () => {
                 </div>
             ) : (
                 game.map((item: Item) => (
-                    <GameItem
-                        key={item.id}
-                        isShowRole={checked.isShowRole}
-                        item={item}
-                        cbSelect={handleRoleChange}
-                        changeValue={(name) =>
-                            handleInputChange(item.id, name)
-                        }
-                        onDragStart={handleDragStart}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
-                        onDragEnd={handleDragEnd}
-                        isDragging={draggedId === item.id}
-                        isDragOver={dragOverId === item.id}
-                    />
+                    <div key={item.id} data-item-id={item.id}>
+                        <GameItem
+                            isShowRole={checked.isShowRole}
+                            item={item}
+                            cbSelect={handleRoleChange}
+                            changeValue={(name) =>
+                                handleInputChange(item.id, name)
+                            }
+                            onDragStart={handleDragStart}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                            onDragEnd={handleDragEnd}
+                            onTouchStart={(e) =>
+                                handleTouchStart(e, item.id)
+                            }
+                            isDragging={draggedId === item.id}
+                            isDragOver={dragOverId === item.id}
+                            $touchY={
+                                draggedId === item.id &&
+                                touchY !== null
+                                    ? touchY
+                                    : null
+                            }
+                            $touchStartY={
+                                draggedId === item.id &&
+                                touchStartY.current !== null
+                                    ? touchStartY.current
+                                    : null
+                            }
+                        />
+                    </div>
                 ))
             )}
             <StyledDivider />

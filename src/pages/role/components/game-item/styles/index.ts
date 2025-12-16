@@ -3,6 +3,7 @@ import styled from 'styled-components'
 type StyledGameItemProps = {
     $isDragging?: boolean
     $isDragOver?: boolean
+    $translateY?: number
 }
 
 export const StyledGameItem = styled.div<StyledGameItemProps>`
@@ -16,20 +17,30 @@ export const StyledGameItem = styled.div<StyledGameItemProps>`
     flex-wrap: wrap;
     flex-direction: column;
     align-items: stretch;
-    cursor: grab;
+    cursor: default;
     padding: 8px;
     margin-bottom: 8px;
 
-    ${({ $isDragging }) =>
+    ${({ $isDragging, $translateY }) =>
         $isDragging &&
         `
         opacity: 0.5;
-        cursor: grabbing;
-        transform: scale(0.95);
+        z-index: 1000;
+        position: ${
+            $translateY !== undefined && $translateY !== 0
+                ? 'relative'
+                : 'static'
+        };
+        transform: ${
+            $translateY !== undefined && $translateY !== 0
+                ? `translateY(${$translateY}px) scale(0.95)`
+                : 'scale(0.95)'
+        };
     `}
 
-    ${({ $isDragOver }) =>
+    ${({ $isDragOver, $isDragging }) =>
         $isDragOver &&
+        !$isDragging &&
         `
         border-color: #667eea;
         background: #e8ebff;
@@ -42,7 +53,7 @@ export const StyledGameItem = styled.div<StyledGameItemProps>`
     }
 
     &:active {
-        cursor: grabbing;
+        cursor: default;
     }
 
     &:last-child {
@@ -77,6 +88,14 @@ export const StyledGameItemId = styled.span`
     font-size: 14px;
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+
+    &:active {
+        cursor: grabbing;
+    }
 `
 
 export const StyledGameItemInput = styled.input`

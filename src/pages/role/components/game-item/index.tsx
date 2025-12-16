@@ -22,8 +22,11 @@ type GameItemProps = {
     onDragLeave: () => void
     onDrop: (id: number) => void
     onDragEnd: () => void
+    onTouchStart: (e: React.TouchEvent) => void
     isDragging: boolean
     isDragOver: boolean
+    $touchY?: number | null
+    $touchStartY?: number | null
 }
 
 export const GameItem = ({
@@ -36,11 +39,15 @@ export const GameItem = ({
     onDragLeave,
     onDrop,
     onDragEnd,
+    onTouchStart,
     isDragging,
     isDragOver,
+    $touchY,
+    $touchStartY,
 }: GameItemProps) => {
     const [isDisabled, setDisabled] = useState<boolean>(true)
     const [value, setValue] = useState<string>(item.userName)
+    const [translateY, setTranslateY] = useState(0)
 
     const handleToggleEdit = (
         e: React.MouseEvent<HTMLButtonElement>
@@ -58,6 +65,40 @@ export const GameItem = ({
     useEffect(() => {
         setValue(item.userName)
     }, [item.userName])
+
+    useEffect(() => {
+        if (
+            $touchY != null &&
+            $touchStartY != null &&
+            typeof $touchY === 'number' &&
+            typeof $touchStartY === 'number'
+        ) {
+            const offsetY = $touchY - $touchStartY
+            setTranslateY(offsetY)
+        } else {
+            setTranslateY(0)
+        }
+    }, [$touchY, $touchStartY])
+
+    const $isTouchDragging =
+        $touchY != null &&
+        $touchStartY != null &&
+        typeof $touchY === 'number' &&
+        typeof $touchStartY === 'number'
+
+    const handleItemTouchStart = (e: React.TouchEvent) => {
+        const target = e.target as HTMLElement
+        const dragId = target.closest('[data-drag-id]')
+        if (!dragId) {
+            e.preventDefault()
+            e.stopPropagation()
+        }
+    }
+
+    const handleDragIdTouchStart = (e: React.TouchEvent) => {
+        e.stopPropagation()
+        onTouchStart(e)
+    }
 
     const handleDragStart = (e: React.DragEvent) => {
         e.dataTransfer.effectAllowed = 'move'
@@ -82,17 +123,24 @@ export const GameItem = ({
 
     return (
         <StyledGameItem
-            draggable
-            onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            onDragEnd={onDragEnd}
-            $isDragging={isDragging}
+            onTouchStart={handleItemTouchStart}
+            $isDragging={isDragging || $isTouchDragging}
             $isDragOver={isDragOver}
+            $translateY={$isTouchDragging ? translateY : 0}
         >
             <StyledGameItemLabel>
-                <StyledGameItemId>{item.id}</StyledGameItemId>
+                <StyledGameItemId
+                    draggable
+                    onDragStart={handleDragStart}
+                    onDragEnd={onDragEnd}
+                    onTouchStart={handleDragIdTouchStart}
+                    data-drag-id
+                >
+                    {item.id}
+                </StyledGameItemId>
                 <StyledGameItemInput
                     onChange={(e) => setValue(e.target.value)}
                     disabled={isDisabled}

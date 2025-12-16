@@ -167,7 +167,6 @@ export const List = ({
                     onDragOver={(e) => handleDragOver(e, index)}
                     onDragLeave={handleDragLeave}
                     onDrop={(e) => handleDrop(e, index)}
-                    onTouchStart={(e) => handleTouchStart(e, index)}
                 >
                     <ItemComponent
                         cb={callback}
@@ -176,6 +175,9 @@ export const List = ({
                         index={index}
                         onDragStart={handleDragStart}
                         onDragEnd={handleDragEnd}
+                        onTouchStart={(e) =>
+                            handleTouchStart(e, index)
+                        }
                         $isDragOver={dragOverIndex === index}
                         $isAllFilled={$isAllFilled}
                         $touchY={
